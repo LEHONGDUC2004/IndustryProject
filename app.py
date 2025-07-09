@@ -1,65 +1,69 @@
+# ✅ Flask App - Backend (VM1)
+# Cho phép người dùng upload file .zip chứa website tĩnh
+# Giải nén và gọi Jenkins job để build & run container trên VM2
+
 import os
 import zipfile
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, request, render_template, redirect
+import requests
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = 'uploads'
+EXTRACT_FOLDER = 'extracted'
 ALLOWED_EXTENSIONS = {'zip'}
 
+# Jenkins server được cài trên máy thật Windows (IP 192.168.202.1)
+JENKINS_URL = 'http://localhost:8081/job/build-web-static/buildWithParameters'
+JENKINS_USER = 'lehongduc3491'  # thay bằng user Jenkins thực tế
+JENKINS_API_TOKEN = 'lehongduc3491'  # thay bằng token từ Jenkins
+
 app = Flask(__name__)
-app.secret_key = 'secret'  # dùng tạm cho flash message
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(EXTRACT_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def extract_zip(file_path, extract_to):
-    with zipfile.ZipFile(file_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_to)
+@app.route('/')
+def index():
+    return render_template('upload.html')
 
-def generate_dockerfile(path):
-    dockerfile_content = """\
-FROM python:3.10-slim
-WORKDIR /app
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-EXPOSE 5000
-CMD ["python", "app.py"]
-"""
-    with open(os.path.join(path, 'Dockerfile'), 'w') as f:
-        f.write(dockerfile_content)
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
-    if request.method == 'POST':
-        if 'codezip' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+    if 'file' not in request.files:
+        return 'No file part', 400
 
-        file = request.files['codezip']
+    file = request.files['file']
+    if file.filename == '' or not allowed_file(file.filename):
+        return 'Invalid file', 400
 
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(save_path)
+    extract_path = os.path.join(EXTRACT_FOLDER, filename[:-4])
+    os.makedirs(extract_path, exist_ok=True)
 
-            extract_folder = os.path.join(app.config['UPLOAD_FOLDER'], filename[:-4])
-            os.makedirs(extract_folder, exist_ok=True)
+    with zipfile.ZipFile(filepath, 'r') as zip_ref:
+        zip_ref.extractall(extract_path)
 
-            extract_zip(save_path, extract_folder)
-            generate_dockerfile(extract_folder)
+    # Gửi request đến Jenkins để build
+    trigger_jenkins_build(extract_path)
 
-            flash(f'Uploaded and generated Dockerfile in: {extract_folder}')
-            return redirect('/')
+    return redirect('/')
 
-    return render_template('index.html')
+def trigger_jenkins_build(source_path):
+    payload = {
+        'SOURCE_PATH': source_path
+    }
+    response = requests.post(
+        JENKINS_URL,
+        auth=(JENKINS_USER, JENKINS_API_TOKEN),
+        params=payload
+    )
+    return response.status_code
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
