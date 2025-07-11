@@ -15,7 +15,7 @@ ALLOWED_EXTENSIONS = {'zip'}
 # Jenkins server được cài trên máy thật Windows (IP 192.168.202.1)
 JENKINS_URL = 'http://localhost:8081/job/build-web-static/buildWithParameters'
 JENKINS_USER = 'lehongduc3491'  # thay bằng user Jenkins thực tế
-JENKINS_API_TOKEN = 'lehongduc3491'  # thay bằng token từ Jenkins
+JENKINS_API_TOKEN = '110eaba63ed58b2bf4c17121b75c764984'  # thay bằng token từ Jenkins
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
