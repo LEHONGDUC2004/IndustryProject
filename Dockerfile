@@ -1,5 +1,5 @@
 # Sử dụng một base image của Python
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Đặt các biến môi trường để tránh các câu hỏi tương tác khi cài đặt
 ENV DEBIAN_FRONTEND=noninteractive
