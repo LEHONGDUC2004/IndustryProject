@@ -8,8 +8,8 @@ services:
     ports:
       - "80:5000"
     volumes:
-      - /home/lehongduc3491/uploaded_source_code:/app/uploads
-      - /home/lehongduc3491/extracted_source_code:/app/extracted
+      - /home/lehongduc3491/uploaded_source_code:/data/uploads
+      - /home/lehongduc3491/extracted_source_code:/data/extracted
     environment:
-      - UPLOAD_FOLDER=/app/uploads
-      - EXTRACT_FOLDER=/app/extracted
+      UPLOAD_FOLDER: /data/uploads
+      EXTRACT_FOLDER: /data/extracted
