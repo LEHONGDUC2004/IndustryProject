@@ -1,12 +1,15 @@
 version: '3.8'
 
 services:
-  app:
+  web_app_upload:
     build: .
-    container_name: industry-project-app
+    container_name: vm1_upload_app
+    restart: always
     ports:
       - "80:5000"
     volumes:
-      - ./uploads:/app/uploads
-      - ./extracted:/app/extracted
-    restart: always
+      - /home/lehongduc3491/uploaded_source_code:/app/uploads
+      - /home/lehongduc3491/extracted_source_code:/app/extracted
+    environment:
+      - UPLOAD_FOLDER=/app/uploads
+      - EXTRACT_FOLDER=/app/extracted
