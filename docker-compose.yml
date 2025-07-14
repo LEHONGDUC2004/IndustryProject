@@ -1,15 +1,17 @@
 version: '3.8'
 
 services:
-  web_app_upload:
-    build: .
-    container_name: vm1_upload_app
+  web_uploader:
+    build: ./app
+    container_name: vm1_flask_upload
     restart: always
     ports:
-      - "80:5000"
+      - "5000:5000"
     volumes:
-      - /home/lehongduc3491/uploaded_source_code:/data/uploads
+      - /home/lehongduc3491/uploaded_source_code:/data/uploaded
       - /home/lehongduc3491/extracted_source_code:/data/extracted
+      - /home/lehongduc3491/replaced_compressed_source_code:/data/replaced
     environment:
-      UPLOAD_FOLDER: /data/uploads
-      EXTRACT_FOLDER: /data/extracted
+      - UPLOAD_DIR=/data/uploaded
+      - EXTRACT_DIR=/data/extracted
+      - REPLACED_DIR=/data/replaced
