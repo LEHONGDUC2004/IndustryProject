@@ -15,13 +15,13 @@ UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
 EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
 REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
 
+# Jenkins
 JENKINS_URL = 'http://192.168.202.1:8081/job/build-web-static/buildWithParameters'
 JENKINS_USER = 'lehongduc3491'
 JENKINS_API_TOKEN = '110eaba63ed58b2bf4c17121b75c764984'
 
 ALLOWED_EXTENSIONS = {'zip'}
 
-# Flask app
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_DIR
 
@@ -67,24 +67,25 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 """)
 
-    # ✅ Nén lại vào replaced folder
+    # ✅ Nén lại
     replaced_zip_path = os.path.join(REPLACED_DIR, filename)
     shutil.make_archive(replaced_zip_path.rsplit('.', 1)[0], 'zip', project_extract_path)
 
-    logger.info(f"✅ Đã xử lý: {filename}")
-    trigger_jenkins_build(replaced_zip_path)
+    logger.info(f"✅ Đã xử lý và lưu ZIP: {filename}")
+    trigger_jenkins_build(filename)
     return redirect('/')
 
-def trigger_jenkins_build(source_path):
+def trigger_jenkins_build(zip_filename):
     payload = {
-        'SOURCE_PATH': source_path
+        'ZIP_NAME': zip_filename  # truyền tên file chứ không truyền path
     }
     response = requests.post(
         JENKINS_URL,
         auth=(JENKINS_USER, JENKINS_API_TOKEN),
         params=payload
     )
+    logger.info(f"📦 Trigger Jenkins với {zip_filename} - Status: {response.status_code}")
     return response.status_code
-    
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
