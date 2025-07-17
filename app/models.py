@@ -1,6 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+
 from flask_login import UserMixin
-from app import db
+from app.extensions import db
 
 class Account(db.Model, UserMixin):
     __tablename__ = 'account'
