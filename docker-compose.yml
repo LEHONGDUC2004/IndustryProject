@@ -1,25 +1,15 @@
 version: '3.8'
 
 services:
-  frontend:
+  app:
     build:
       context: .
-      dockerfile: app/frontend/Dockerfile
-    container_name: flask_fe
-    ports:
-      - "8080:80"
-    volumes:
-      - ./app/frontend:/usr/share/nginx/html:ro
-
-  backend:
-    build:
-      context: .
-      dockerfile: app/backend/Dockerfile
-    container_name: flask_be
+      dockerfile: Dockerfile
+    container_name: flask_app
     ports:
       - "5000:5000"
     volumes:
-      - ./app/backend:/app
+      - ./:/app
       - /home/lehongduc3491/uploaded_source_code:/data/uploaded
       - /home/lehongduc3491/extracted_source_code:/data/extracted
       - /home/lehongduc3491/replaced_compressed_source_code:/data/replaced
@@ -42,8 +32,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: upload_app
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456
     volumes:
       - db_data:/var/lib/mysql
       - ./db_init:/docker-entrypoint-initdb.d

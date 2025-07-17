@@ -32,4 +32,4 @@ COPY --chown=appuser:appuser . .
 EXPOSE 5000
 
 # Lệnh để chạy ứng dụng
-CMD ["python", "app.py"]
+CMD ["python", "run.py"]
