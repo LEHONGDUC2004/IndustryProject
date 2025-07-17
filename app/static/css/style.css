@@ -1,0 +1,60 @@
+body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeInSlideUp {
+            animation: fadeInSlideUp 0.8s ease-out forwards;
+        }
+
+        .file-upload-area {
+            transition: all 0.3s ease;
+        }
+        .file-upload-area:hover {
+            border-color: #6366f1;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .file-upload-area.drag-over {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .file-upload-label {
+            transition: color 0.3s ease;
+        }
+        .file-upload-label:hover {
+            color: #4f46e5;
+        }
+
+        .upload-button {
+            transition: all 0.3s ease;
+            background-size: 200% auto;
+            background-image: linear-gradient(to right, #6366f1 0%, #a855f7 50%, #6366f1 100%);
+        }
+        .upload-button:hover {
+            background-position: right center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .clear-file-button {
+            cursor: pointer;
+            color: #ef4444;
+            margin-left: 8px;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+        .clear-file-button:hover {
+            color: #dc2626;
+        }
