@@ -1,12 +1,20 @@
 from flask import Flask
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+
 from app.extensions import db, login_manager
 from app.models import Account
+
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret123'
+    # database docker
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db/upload_app'
+    # database mysql localhost
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456789a@localhost/db?charset=utf8mb4'
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -21,4 +29,7 @@ def create_app():
     from app.routes import register_routes
     register_routes(app)
 
+    with app.app_context():
+        db.create_all()
+        print("Database và các bảng đã được khởi tạo!")
     return app

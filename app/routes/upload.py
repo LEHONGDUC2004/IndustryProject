@@ -1,50 +1,59 @@
-# app/backend/upload.py
-from flask import Blueprint, render_template, request, redirect
-import os, zipfile, shutil
+from flask import Blueprint, request, redirect, render_template
+from app.routes.jenkins_trigger import trigger_jenkins_build
 from werkzeug.utils import secure_filename
+import os, zipfile, shutil, requests, logging
+from app.controller.allowed_file import allowed_file
 
 upload_bp = Blueprint('upload', __name__)
+logger = logging.getLogger(__name__)
 
-@upload_bp.route('/')
-def index():
-    return render_template('upload.html')
+# === Các thư mục mount volume từ Docker ===
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
+EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
+REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
 
-@upload_bp.route('/upload', methods=['POST'])
+for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
+    os.makedirs(p, exist_ok=True)
+
+# === Route xử lý upload ZIP ===
+@upload_bp.route('/', methods=['POST'])
 def upload_zip():
-        if 'file' not in request.files:
-            return ' No file part', 400
+    if 'file' not in request.files:
+        return 'No file part', 400
 
-        file = request.files['file']
-        if file.filename == '' or not allowed_file(file.filename):
-            return ' Invalid file', 400
+    file = request.files['file']
+    if file.filename == '' or not allowed_file(file.filename):
+        return 'Invalid file', 400
 
-        filename = secure_filename(file.filename)
-        zip_path = os.path.join(UPLOAD_DIR, filename)
-        file.save(zip_path)
+    filename = secure_filename(file.filename)
+    zip_path = os.path.join(UPLOAD_DIR, filename)
+    file.save(zip_path)
 
-        # Giải nén
-        project_name = filename.rsplit('.', 1)[0]
-        project_extract_path = os.path.join(EXTRACT_DIR, project_name)
-        os.makedirs(project_extract_path, exist_ok=True)
+    # === Giải nén ===
+    project_name = filename.rsplit('.', 1)[0]
+    project_extract_path = os.path.join(EXTRACT_DIR, project_name)
+    os.makedirs(project_extract_path, exist_ok=True)
 
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(project_extract_path)
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(project_extract_path)
 
-        # Thêm Dockerfile
-        dockerfile_path = os.path.join(project_extract_path, 'Dockerfile')
-        with open(dockerfile_path, 'w') as f:
-            f.write("""\
-    FROM nginx:stable-alpine
-    COPY . /usr/share/nginx/html
-    EXPOSE 80
-    CMD ["nginx", "-g", "daemon off;"]
-    """)
+    # === Thêm Dockerfile vào thư mục đã giải nén ===
+    dockerfile_path = os.path.join(project_extract_path, 'Dockerfile')
+    with open(dockerfile_path, 'w') as f:
+        f.write("""\
+FROM nginx:stable-alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+""")
 
-        # Nén lại vào thư mục replaced
-        replaced_zip_path = os.path.join(REPLACED_DIR, filename)
-        shutil.make_archive(replaced_zip_path.rsplit('.', 1)[0], 'zip', project_extract_path)
+    # === Nén lại và đưa vào thư mục replaced ===
+    replaced_zip_path = os.path.join(REPLACED_DIR, filename)
+    shutil.make_archive(replaced_zip_path.rsplit('.', 1)[0], 'zip', project_extract_path)
 
-        logger.info(f" Đã xử lý: {filename}")
-        trigger_jenkins_build(filename)
+    logger.info(f" Đã xử lý ZIP: {filename}")
+    trigger_jenkins_build(filename)
 
-        return redirect('/')
+    return redirect('/')
+
+
