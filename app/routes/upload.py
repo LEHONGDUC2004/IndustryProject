@@ -3,7 +3,9 @@ from app.routes.jenkins_trigger import trigger_jenkins_build
 from werkzeug.utils import secure_filename
 import os, zipfile, shutil, requests, logging
 from app.controller.allowed_file import allowed_file
-
+from app.controller.detect_project import detect_project_type
+from app.controller.create_dockerfile import create_dockerfile
+from app.controller.create_dockercompose import create_compose
 upload_bp = Blueprint('upload', __name__)
 logger = logging.getLogger(__name__)
 
@@ -34,18 +36,16 @@ def upload_zip():
     project_extract_path = os.path.join(EXTRACT_DIR, project_name)
     os.makedirs(project_extract_path, exist_ok=True)
 
+
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(project_extract_path)
 
+    project_type = detect_project_type(project_extract_path)
+
     # === Thêm Dockerfile vào thư mục đã giải nén ===
-    dockerfile_path = os.path.join(project_extract_path, 'Dockerfile')
-    with open(dockerfile_path, 'w') as f:
-        f.write("""\
-FROM nginx:stable-alpine
-COPY . /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-""")
+    create_dockerfile(project_extract_path, project_type)
+    create_compose(project_extract_path)
+
 
     # === Nén lại và đưa vào thư mục replaced ===
     replaced_zip_path = os.path.join(REPLACED_DIR, filename)
