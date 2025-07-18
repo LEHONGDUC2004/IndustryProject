@@ -6,6 +6,7 @@ from app.controller.allowed_file import allowed_file
 from app.controller.detect_project import detect_project_type
 from app.controller.create_dockerfile import create_dockerfile
 from app.controller.create_dockercompose import create_compose
+from app.controller.setup_vm import create_setup
 upload_bp = Blueprint('upload', __name__)
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ def upload_zip():
     # === Thêm Dockerfile vào thư mục đã giải nén ===
     create_dockerfile(project_extract_path, project_type)
     create_compose(project_extract_path)
-
+    create_setup(project_extract_path)
 
     # === Nén lại và đưa vào thư mục replaced ===
     replaced_zip_path = os.path.join(REPLACED_DIR, filename)
