@@ -1,7 +1,7 @@
-from flask import Blueprint, request, redirect, render_template
+from flask import Blueprint, request, redirect
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from werkzeug.utils import secure_filename
-import os, zipfile, shutil, requests, logging
+import os, zipfile, shutil, logging
 from app.controller.allowed_file import allowed_file
 from app.controller.detect_project import detect_project_type
 from app.controller.create_dockerfile import create_dockerfile
@@ -10,11 +10,12 @@ from app.controller.create_dockercompose import create_compose
 upload_bp = Blueprint('upload', __name__)
 logger = logging.getLogger(__name__)
 
-# === Các thư mục mount volume từ Docker ===
+# === Các thư mục mount volume từ Docker container ===
 UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
 EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
 REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
 
+# === Đảm bảo các thư mục tồn tại khi container chạy ===
 for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
     os.makedirs(p, exist_ok=True)
 
@@ -28,11 +29,12 @@ def upload_zip():
     if file.filename == '' or not allowed_file(file.filename):
         return 'Invalid file', 400
 
+    # === Lưu file vào thư mục uploaded ===
     filename = secure_filename(file.filename)
     zip_path = os.path.join(UPLOAD_DIR, filename)
     file.save(zip_path)
 
-    # === Giải nén ===
+    # === Giải nén file vào thư mục extracted ===
     project_name = filename.rsplit('.', 1)[0]
     project_extract_path = os.path.join(EXTRACT_DIR, project_name)
     os.makedirs(project_extract_path, exist_ok=True)
@@ -40,7 +42,7 @@ def upload_zip():
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(project_extract_path)
 
-    # === Tìm thư mục project thực sự bên trong nếu tồn tại ===
+    # === Tìm thư mục dự án thực sự bên trong (nếu có 1 thư mục con duy nhất) ===
     items = os.listdir(project_extract_path)
     subdirs = [d for d in items if os.path.isdir(os.path.join(project_extract_path, d))]
     if len(subdirs) == 1:
@@ -48,10 +50,9 @@ def upload_zip():
     else:
         project_real_path = project_extract_path
 
-    # === Phân loại dự án (Python, Node.js, v.v.) ===
+    # === Phân loại dự án và tạo Dockerfile nếu cần ===
     project_type = detect_project_type(project_real_path)
 
-    # === Thêm Dockerfile & docker-compose.yml nếu chưa có ===
     dockerfile_path = os.path.join(project_real_path, "Dockerfile")
     compose_path = os.path.join(project_real_path, "docker-compose.yml")
 
@@ -61,7 +62,7 @@ def upload_zip():
     if not os.path.exists(compose_path):
         create_compose(project_real_path)
 
-    # === Nén lại dự án sau khi xử lý ===
+    # === Nén lại thư mục dự án đã được xử lý vào thư mục replaced ===
     replaced_zip_path = os.path.join(REPLACED_DIR, filename)
     shutil.make_archive(
         replaced_zip_path.rsplit('.', 1)[0],
@@ -71,6 +72,8 @@ def upload_zip():
     )
 
     logger.info(f"Đã xử lý ZIP: {filename}")
+
+    # === Gửi tên file cho Jenkins để build ===
     trigger_jenkins_build(filename)
 
     return redirect('/')
