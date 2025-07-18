@@ -27,7 +27,7 @@ def create_dockerfile(project_path, project_type):
     COPY . .
     RUN pip install --no-cache-dir -r requirements.txt
     EXPOSE 5000
-    CMD ["python", "app.py"]
+    CMD ["sh", "-c", "sleep 15 && python run.py"]
     """)
         else:
             return 'Không nhận diện được loại ứng dụng. Vui lòng đảm bảo project hợp lệ.', 400
