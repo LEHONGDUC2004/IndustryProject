@@ -1,6 +1,4 @@
 from flask import Flask
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 
 from app.extensions import db, login_manager
 from app.models import Account
@@ -29,7 +27,5 @@ def create_app():
     from app.routes import register_routes
     register_routes(app)
 
-    with app.app_context():
-        db.create_all()
-        print("Database và các bảng đã được khởi tạo!")
+
     return app
