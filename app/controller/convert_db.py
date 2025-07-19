@@ -9,12 +9,9 @@ def import_sql_to_mysql(sql_path, db_info):
         db_info['DB_NAME']
     ]
 
-    print("CMD:", ' '.join(cmd))  # ⚠️ In ra để kiểm tra
-
     try:
         with open(sql_path, 'rb') as f:
             subprocess.run(cmd, stdin=f, check=True)
-    except FileNotFoundError as e:
-        print("❌ FileNotFoundError:", e)
-        print("🔎 Có thể không tìm thấy chương trình 'mysql'.")
-        raise
+        print(f"Import {sql_path} thành công vào MySQL!")
+    except subprocess.CalledProcessError as e:
+        print(f"Lỗi import SQL: {e}")
