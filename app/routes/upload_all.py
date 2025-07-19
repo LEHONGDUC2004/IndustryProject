@@ -86,6 +86,6 @@ def upload_all():
 
     trigger_jenkins_build(zip_filename)
 
-    return redirect(url_for('main_bp.success'))  # cách này chỉ đúng nếu dùng route thuần
+    return redirect(url_for('main.success'))  # cách này chỉ đúng nếu dùng route thuần
 
 
