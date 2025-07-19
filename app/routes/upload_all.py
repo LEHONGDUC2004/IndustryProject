@@ -6,6 +6,8 @@ from app.controller.create_dockerfile import create_dockerfile
 from app.controller.create_dockercompose import create_compose
 from app.controller.convert_db import import_sql_to_mysql
 from app.controller.update_db_user import update_database_uri_in_project
+from app.controller.replace_db_uri import replace_sqlalchemy_uri
+
 import os, shutil, zipfile, subprocess
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
@@ -60,6 +62,9 @@ def upload_all():
 
     # 4. Cập nhật URI kết nối
     update_database_uri_in_project(project_real_path, db_info)
+    # Tìm file __init__.py để thay thế dòng URI cứng
+    init_file_path = os.path.join(project_real_path, 'app', '__init__.py')
+    replace_sqlalchemy_uri(init_file_path)
 
     # 5. Tạo Dockerfile + docker-compose
     project_type = detect_project_type(project_real_path)
