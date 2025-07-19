@@ -9,9 +9,8 @@ def update_database_uri_in_project(project_path, db_info):
     env_path = os.path.join(project_path, '.env')
 
     # Tạo URI mới
-    encoded_password = quote(db_info['DB_PASSWORD'])
     new_uri = (
-        f"mysql+pymysql://{db_info['DB_USER']}:{encoded_password}"
+        f"mysql+pymysql://{db_info['DB_USER']}:{db_info['DB_PASSWORD']}"
         f"@{db_info['DB_HOST']}/{db_info['DB_NAME']}?charset=utf8mb4"
     )
     new_line = f"SQLALCHEMY_DATABASE_URI={new_uri}"

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, session, logging
+from flask import Blueprint, request, redirect, session, logging, url_for
 from werkzeug.utils import secure_filename
 from app.controller.allowed_file import allowed_file
 from app.controller.detect_project import detect_project_type
@@ -26,10 +26,10 @@ def upload_all():
 
     # 1. Lấy thông tin DB
     db_info = {
-        'name_database': request.form.get('name_database'),
-        'name_user': request.form.get('name_user'),
-        'host_db': request.form.get('host_db'),
-        'passwd': request.form.get('passwd')
+        'DB_NAME': request.form.get('name_database'),
+        'DB_USER': request.form.get('name_user'),
+        'DB_HOST': request.form.get('host_db'),
+        'DB_PASSWORD': request.form.get('passwd')
     }
     session['db_info'] = db_info
 
@@ -66,10 +66,10 @@ def upload_all():
     create_dockerfile(project_real_path, project_type)
     create_compose(
         docker_path=project_real_path,
-        name_database=db_info['name_database'],
-        name_user=db_info['name_user'],
-        host_db=db_info['host_db'],
-        passwd=db_info['passwd']
+        name_database=db_info['DB_NAME'],
+        name_user=db_info['DB_USER'],
+        host_db=db_info['DB_HOST'],
+        passwd=db_info['DB_PASSWORD']
     )
 
     # 6. Tự động import file .sql
@@ -85,4 +85,7 @@ def upload_all():
     )
 
     trigger_jenkins_build(zip_filename)
-    return redirect('/success')
+
+    return redirect(url_for('main_bp.success'))  # cách này chỉ đúng nếu dùng route thuần
+
+

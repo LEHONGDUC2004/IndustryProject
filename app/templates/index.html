@@ -9,7 +9,7 @@
             <div class="col-lg-8 col-md-10 col-sm-12">
                 <div class="bg-white p-5 rounded-3 shadow-lg w-100">
                     <h2 class="fw-bold text-dark mb-4 text-center">Triển Khai Ứng Dụng Mới</h2>
-                    <form method="POST" action="/upload_all" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url_for('upload_all.upload_all') }}" enctype="multipart/form-data">
                         <!-- THÔNG TIN DB -->
                         <div class="mb-4">
                             <label for="name_database" class="form-label fw-medium mb-2">Tên Cơ Sở Dữ Liệu</label>

@@ -12,18 +12,16 @@ def index():
 @main_bp.route('/login')
 def login():
     return render_template('login.html')
+
 @main_bp.route('/upload_code')
 def upload_code():
     return render_template('upload_code.html')
 
-@main_bp.route('/upload_db')
-def upload_db():
-    return render_template('upload_db.html')
 
 @main_bp.route('/upload_infodb')
 def upload_infodb():
     return render_template('upload/info_db.html')
 
 @main_bp.route('/success')
-def success_code():
-    return render_template('upload/success.html')
+def success():
+    return render_template('success.html')
