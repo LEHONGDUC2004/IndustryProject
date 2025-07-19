@@ -1,13 +1,23 @@
 import os
 
-
 def detect_project_type(project_path):
+    has_json = False
+    has_py = False
+    has_html = False
+
     for filename in os.listdir(project_path):
         if filename.endswith('.json'):
-                return 'nodejs'
+            has_json = True
         elif filename.endswith('.py'):
-                return 'flask'
+            has_py = True
         elif filename.endswith('.html'):
-                return "static"
-        else:
-                return 'unknown'
+            has_html = True
+
+    if has_json:
+        return 'nodejs'
+    elif has_py:
+        return 'flask'
+    elif has_html:
+        return 'static'
+    else:
+        return 'unknown'
