@@ -1,35 +1,38 @@
 FROM python:3.11-slim
 
-# Đặt biến môi trường để các lệnh cài đặt không hỏi tương tác
+# Đặt biến môi trường để không bị hỏi khi apt install
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Cài đặt git và openssh-client
-RUN apt-get update && apt-get install -y git openssh-client
+# Cài mysql client, git, openssh trước khi chuyển sang user không phải root
+RUN apt-get update && apt-get install -y \
+    default-mysql-client \
+    git \
+    openssh-client \
+ && rm -rf /var/lib/apt/lists/*  # Dọn dẹp để giảm dung lượng image
 
-# Tạo 1 user không phải root để chạy ứng dụng
+# Tạo user không phải root
 RUN useradd --create-home --shell /bin/bash appuser
 
-# Chuyển sang user mới
+# Chuyển sang user appuser
 USER appuser
 
-# Tự động thêm public key của github.com vào danh sách host đáng tin cậy
-# Đây là bước mấu chốt để sửa lỗi "Host key verification failed"
-RUN mkdir -p /home/appuser/.ssh
-RUN ssh-keyscan github.com >> /home/appuser/.ssh/known_hosts
-RUN chmod 600 /home/appuser/.ssh/known_hosts
+# Thêm github vào known_hosts để tránh lỗi khi clone SSH
+RUN mkdir -p /home/appuser/.ssh && \
+    ssh-keyscan github.com >> /home/appuser/.ssh/known_hosts && \
+    chmod 600 /home/appuser/.ssh/known_hosts
 
-# Đặt thư mục làm việc
+# Thiết lập thư mục làm việc
 WORKDIR /home/appuser/app
 
-# Copy và cài đặt các thư viện Python
+# Copy requirements và cài đặt thư viện Python
 COPY --chown=appuser:appuser requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy toàn bộ code của ứng dụng vào
+# Copy toàn bộ mã nguồn
 COPY --chown=appuser:appuser . .
 
-# Mở port 5000 để truy cập website local
+# Mở port 5000
 EXPOSE 5000
 
-# Lệnh để chạy ứng dụng
+# Chạy ứng dụng
 CMD ["sh", "-c", "sleep 15 && python run.py"]
