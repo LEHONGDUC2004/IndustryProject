@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, session
+from flask import Blueprint, request, redirect, session, logging
 from werkzeug.utils import secure_filename
 from app.controller.allowed_file import allowed_file
 from app.controller.detect_project import detect_project_type
@@ -8,11 +8,18 @@ from app.controller.convert_db import import_sql_to_mysql
 from app.controller.update_db_user import update_database_uri_in_project
 import os, shutil, zipfile, subprocess
 
-uploadAll_bp = Blueprint('upload_all', __name__)
+from app.routes.jenkins_trigger import trigger_jenkins_build
 
-UPLOAD_DIR = "/data/uploaded"
-EXTRACT_DIR = "/data/extracted"
-REPLACED_DIR = "/data/replaced"
+uploadAll_bp = Blueprint('upload_all', __name__)
+logger = logging.getLogger(__name__)
+
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
+EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
+REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
+
+# Đảm bảo các thư mục tồn tại khi container chạy ===
+for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
+    os.makedirs(p, exist_ok=True)
 
 @uploadAll_bp.route('/upload_all', methods=['POST'])
 def upload_all():
@@ -77,4 +84,6 @@ def upload_all():
         base_dir=os.path.basename(project_real_path)
     )
 
+    logger.info(f"Đã xử lý ZIP: {zip_filename}")
+    trigger_jenkins_build(zip_filename)
     return redirect('/success')
