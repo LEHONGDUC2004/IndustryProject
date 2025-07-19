@@ -1,4 +1,4 @@
-import app.routes.upload
+import app.routes.upload_all
 
 # === Kiểm tra định dạng file ===
 ALLOWED_EXTENSIONS = {'zip'}

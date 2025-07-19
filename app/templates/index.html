@@ -3,54 +3,55 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 {% endblock %}
 {% block content %}
-<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fadeInSlideUp">
-        <h2 class="text-3xl font-extrabold text-gray-800 mb-6 text-center">
-            Tải lên mã nguồn (.zip)
-        </h2>
-        <p class="text-gray-600 text-center mb-8">
-            Vui lòng chọn tệp tin mã nguồn nén (.zip) của bạn để tải lên.
-        </p>
+<body class="bg-light d-flex justify-content-center align-items-center min-vh-100 m-0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="bg-white p-5 rounded-3 shadow-lg w-100">
+                    <h2 class="fw-bold text-dark mb-4 text-center">Triển Khai Ứng Dụng Mới</h2>
+                    <form method="POST" action="/upload_all" enctype="multipart/form-data">
+                        <!-- THÔNG TIN DB -->
+                        <div class="mb-4">
+                            <label for="name_database" class="form-label fw-medium mb-2">Tên Cơ Sở Dữ Liệu</label>
+                            <input type="text" class="form-control rounded-2 py-3 px-3" id="name_database" name="name_database" placeholder="Nhập tên cơ sở dữ liệu" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="name_user" class="form-label fw-medium mb-2">Tên Người Dùng DB</label>
+                            <input type="text" class="form-control rounded-2 py-3 px-3" id="name_user" name="name_user" placeholder="Nhập tên người dùng cơ sở dữ liệu" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="host_db" class="form-label fw-medium mb-2">Máy Chủ DB</label>
+                            <input type="text" class="form-control rounded-2 py-3 px-3" id="host_db" name="host_db" placeholder="Nhập địa chỉ máy chủ cơ sở dữ liệu" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="passwd" class="form-label fw-medium mb-2">Mật Khẩu DB</label>
+                            <input type="password" class="form-control rounded-2 py-3 px-3" id="passwd" name="passwd" placeholder="Nhập mật khẩu cơ sở dữ liệu" required>
+                        </div>
 
-        <form method="post" enctype="multipart/form-data" action="/upload" class="space-y-6">
-            <div>
-                <label for="file-upload" class="block text-sm font-medium text-gray-700 mb-2">
-                    Chọn tệp tin:
-                </label>
-                <div id="drop-area" class="file-upload-area mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md hover:border-blue-400 transition-colors duration-200">
-                    <div class="space-y-1 text-center w-full">
-                        <svg id="upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 00-4 4H12a4 4 0 01-4-4m0-8l9.5-9.511a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div id="upload-instructions" class="flex text-sm text-gray-600 justify-center">
-                            <label for="file-upload" class="file-upload-label relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                <span>Tải lên một tệp</span>
-                                <input id="file-upload" name="file" type="file" class="sr-only">
-                            </label>
-                            <p class="pl-1">hoặc kéo và thả</p>
+                        <hr class="my-4"> <!-- Dải phân cách -->
+                        <div class="mb-4"></div> <!-- Khoảng trống sau dải phân cách -->
+
+                        <!-- FILE .SQL -->
+                        <div class="mb-4">
+                            <label for="file_sql" class="form-label fw-medium mb-2">Tệp .SQL (Cơ Sở Dữ Liệu)</label>
+                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_sql" name="file_sql" accept=".sql" required>
                         </div>
-                        <p id="file-size-info" class="text-xs text-gray-500">
-                            ZIP lên đến 10MB
-                        </p>
-                        <div id="file-display-area" class="hidden flex items-center justify-center text-sm text-gray-700 mt-2">
-                            <span id="selected-file-name" class="truncate max-w-[calc(100%-30px)]"></span>
-                            <button type="button" id="clear-file-button" class="clear-file-button">
-                                &times;
-                            </button>
+
+                        <!-- FILE .ZIP -->
+                        <div class="mb-5">
+                            <label for="file_zip" class="form-label fw-medium mb-2">Tệp Mã Nguồn (.ZIP)</label>
+                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_zip" name="file_zip" accept=".zip" required>
                         </div>
-                    </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary rounded-3 py-3 px-4 fs-5 fw-semibold">Tải Lên và Triển Khai</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <button type="submit" class="upload-button w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 transform hover:scale-105">
-                Tải lên
-            </button>
-<!--            <button type="submit" class="upload-button w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 transform hover:scale-105">-->
-<!--                <a href="/login">Đăng Ký</a>-->
-<!--            </button>-->
-        </form>
+        </div>
     </div>
-</body>
+
 {% endblock %}
 {% block javascript %}
 <script src="{{ url_for('static', filename='js/style.js') }}"></script>

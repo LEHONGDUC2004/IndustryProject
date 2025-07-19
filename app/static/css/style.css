@@ -58,3 +58,9 @@ body {
         .clear-file-button:hover {
             color: #dc2626;
         }
+        .upload-db {
+         margin-left:3rem;
+        }
+        .edit_db {
+                width: 93% !important;
+        }
