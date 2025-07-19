@@ -11,7 +11,7 @@ import os, shutil, zipfile, subprocess
 from app.routes.jenkins_trigger import trigger_jenkins_build
 
 uploadAll_bp = Blueprint('upload_all', __name__)
-logger = logging.getLogger(__name__)
+
 
 UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
 EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
@@ -84,6 +84,5 @@ def upload_all():
         base_dir=os.path.basename(project_real_path)
     )
 
-    logger.info(f"Đã xử lý ZIP: {zip_filename}")
     trigger_jenkins_build(zip_filename)
     return redirect('/success')
