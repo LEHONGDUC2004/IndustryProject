@@ -5,8 +5,8 @@ from app.models import Account
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'secret123'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db/upload_app'
+    app.config['SECRET_KEY'] = 'secret123456'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db/upload_app?charset=utf8mb4'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -20,5 +20,7 @@ def create_app():
 
     from app.routes import register_routes
     register_routes(app)
+    with app.app_context():
+        db.create_all()
 
     return app
