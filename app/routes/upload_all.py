@@ -6,7 +6,7 @@ from app.controller.create_dockerfile import create_dockerfile
 from app.controller.create_dockercompose import create_compose
 from app.controller.convert_db import import_sql_to_mysql
 from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
-from app.controller.create_database import create_database_if_not_exists
+
 import os, shutil, zipfile, subprocess
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
@@ -34,7 +34,6 @@ def upload_all():
     }
     session['db_info'] = db_info
 
-    create_database_if_not_exists(db_info)
     # 2. Lưu file .sql
     sql_file = request.files.get('file_sql')
     sql_filename = secure_filename(sql_file.filename)
