@@ -25,18 +25,16 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
             "    )\n"
         )
 
+    # Lọc bỏ dòng cũ
     for line in lines:
-        # Bắt đầu gặp dòng URI cũ
         if "app.config['SQLALCHEMY_DATABASE_URI']" in line:
             inside_old_block = True
             replaced = True
-            continue  # bỏ dòng này
-
+            continue
         if inside_old_block:
             if ')' in line or line.strip().endswith("'") or line.strip().endswith('"'):
                 inside_old_block = False
-            continue  # bỏ tất cả dòng trong block URI cũ
-
+            continue
         new_lines.append(line)
 
     # Chèn dòng mới nếu chưa có
@@ -49,6 +47,7 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
         if not replaced:
             new_lines.append('\n' + new_uri_line)
 
+    # Ghi lại file
     with open(file_path, 'w') as f:
         f.writelines(new_lines)
 
