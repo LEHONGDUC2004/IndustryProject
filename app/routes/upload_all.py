@@ -5,8 +5,7 @@ from app.controller.detect_project import detect_project_type
 from app.controller.create_dockerfile import create_dockerfile
 from app.controller.create_dockercompose import create_compose
 from app.controller.convert_db import import_sql_to_mysql
-from app.controller.update_db_user import remove_sqlalchemy_uri
-from app.controller.replace_db_uri import replace_sqlalchemy_uri
+from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
 
 import os, shutil, zipfile, subprocess
 
@@ -60,12 +59,10 @@ def upload_all():
     subdirs = [d for d in os.listdir(extract_path) if os.path.isdir(os.path.join(extract_path, d))]
     project_real_path = os.path.join(extract_path, subdirs[0]) if len(subdirs) == 1 else extract_path
 
-    # 4. Cập nhật URI kết nối
-    init_file_path = os.path.join(project_real_path, 'app', '__init__.py')
-    remove_sqlalchemy_uri(init_file_path)
+
     # Tìm file __init__.py để thay thế dòng URI cứng
     init_file_path = os.path.join(project_real_path, 'app', '__init__.py')
-    replace_sqlalchemy_uri(init_file_path)
+    replace_or_add_sqlalchemy_uri(init_file_path)
 
     # 5. Tạo Dockerfile + docker-compose
     project_type = detect_project_type(project_real_path)
