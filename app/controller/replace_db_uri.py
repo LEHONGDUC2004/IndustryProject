@@ -39,7 +39,6 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
 
         new_lines.append(line)
 
-    new_lines = []
     # Chèn dòng mới nếu chưa có
     if not replaced:
         for i in range(len(new_lines)):
