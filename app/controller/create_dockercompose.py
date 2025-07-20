@@ -14,14 +14,14 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - db
+      - {host_db}
     environment:
       - DB_HOST={host_db}
       - DB_USER={name_user}
       - DB_PASSWORD={passwd}
       - DB_NAME={name_database}
 
-  db:
+  {host_db}:
     image: mysql:8.0
     container_name: flask_mysql_host
     restart: always
