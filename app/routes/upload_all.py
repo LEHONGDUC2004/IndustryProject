@@ -40,7 +40,12 @@ def upload_all():
     sql_filename = secure_filename(sql_file.filename)
     sql_path = os.path.join(UPLOAD_DIR, sql_filename)
     sql_file.save(sql_path)
-    replace_database_name(sql_path, db_info["DB_NAME"])
+    replace_database_name(
+        sql_path=sql_path,
+        new_db_name=db_info['DB_NAME'],
+        db_user=db_info['DB_USER'],
+        db_password=db_info['DB_PASSWORD']
+    )
 
     # 6. Tự động import file .sql
     import_sql_to_mysql(sql_path, db_info)
