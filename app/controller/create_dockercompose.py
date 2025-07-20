@@ -1,12 +1,9 @@
 import os
 
-
-def create_compose(docker_path, name_database, name_user, host_db, passwd):
-    has_init_sql = os.path.exists(os.path.join(docker_path, "init.sql"))
+def create_compose(docker_path, name_database, name_user, host_db, passwd, filename_sql):
     compose_path = os.path.join(docker_path, 'docker-compose.yml')
     with open(compose_path, 'w') as f:
-        f.write(f"""\
-version: '3.8'
+        f.write(f"""version: '3.8'
 
 services:
   app:
@@ -19,10 +16,10 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST={name_database}
+      - DB_HOST={host_db}
       - DB_USER={name_user}
       - DB_PASSWORD={passwd}
-      - DB_NAME={host_db}
+      - DB_NAME={name_database}
 
   db:
     image: mysql:5.7
@@ -30,15 +27,11 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: {passwd}
-      MYSQL_DATABASE: {host_db}
+      MYSQL_DATABASE: {name_database}
     ports:
       - "3306:3306"
-""")
-        if has_init_sql:
-            f.write("    volumes:\n")
-            f.write("      - ./init.sql:/docker-entrypoint-initdb.d/init.sql\n")
-
-        f.write("""\
+    volumes:
+      - ./{filename_sql}:/docker-entrypoint-initdb.d/{filename_sql}
 volumes:
   db_data:
 """)

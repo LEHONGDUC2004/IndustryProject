@@ -40,6 +40,9 @@ def upload_all():
     sql_path = os.path.join(UPLOAD_DIR, sql_filename)
     sql_file.save(sql_path)
 
+    # 6. Tự động import file .sql
+    import_sql_to_mysql(sql_path, db_info)
+
     # 3. Lưu và giải nén file .zip
     zip_file = request.files.get('file_zip')
     zip_filename = secure_filename(zip_file.filename)
@@ -59,6 +62,9 @@ def upload_all():
     subdirs = [d for d in os.listdir(extract_path) if os.path.isdir(os.path.join(extract_path, d))]
     project_real_path = os.path.join(extract_path, subdirs[0]) if len(subdirs) == 1 else extract_path
 
+    # Copy file .sql vào trong thư mục dự án thực tế
+    shutil.copy(sql_path, os.path.join(project_real_path, sql_filename))
+
 
     # Tìm file __init__.py để thay thế dòng URI cứng
     init_file_path = os.path.join(project_real_path, 'app', '__init__.py')
@@ -72,11 +78,11 @@ def upload_all():
         name_database=db_info['DB_NAME'],
         name_user=db_info['DB_USER'],
         host_db=db_info['DB_HOST'],
-        passwd=db_info['DB_PASSWORD']
+        passwd=db_info['DB_PASSWORD'],
+        filename_sql=sql_filename
     )
 
-    # 6. Tự động import file .sql
-    import_sql_to_mysql(sql_path, db_info)
+
 
     # 7. Nén lại dự án đã xử lý
     replaced_path = os.path.join(REPLACED_DIR, zip_filename)
