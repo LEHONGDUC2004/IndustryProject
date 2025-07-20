@@ -6,7 +6,7 @@ from app.controller.create_dockerfile import create_dockerfile
 from app.controller.create_dockercompose import create_compose
 from app.controller.convert_db import import_sql_to_mysql
 from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
-
+from app.controller.replacename_db import replace_database_name
 import os, shutil, zipfile, subprocess
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
@@ -39,6 +39,7 @@ def upload_all():
     sql_filename = secure_filename(sql_file.filename)
     sql_path = os.path.join(UPLOAD_DIR, sql_filename)
     sql_file.save(sql_path)
+    replace_database_name(sql_path, db_info["DB_NAME"])
 
     # 6. Tự động import file .sql
     import_sql_to_mysql(sql_path, db_info)
