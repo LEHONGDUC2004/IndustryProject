@@ -7,6 +7,7 @@ from app.controller.create_dockercompose import create_compose
 from app.controller.convert_db import import_sql_to_mysql
 from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
 from app.controller.replacename_db import replace_database_name
+from app.controller.find_init_file import find_flask_app_file
 import os, shutil, zipfile, subprocess
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
@@ -68,7 +69,7 @@ def upload_all():
 
 
     # Tìm file __init__.py để thay thế dòng URI cứng
-    init_file_path = os.path.join(project_real_path, 'app', '__init__.py')
+    init_file_path = find_flask_app_file(project_real_path)
     replace_or_add_sqlalchemy_uri(init_file_path, db_info)
 
     # 5. Tạo Dockerfile + docker-compose
