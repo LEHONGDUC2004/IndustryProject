@@ -2,10 +2,10 @@ import os
 
 def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
     if not os.path.exists(file_path):
-        print(f"❌ Không tìm thấy file tại đường dẫn: {file_path}")
+        print(f"Không tìm thấy file tại đường dẫn: {file_path}")
         return
 
-    # Tạo dòng cấu hình mới
+    # Tạo dòng URI mới
     if db_info:
         new_uri_line = (
             f"    app.config['SQLALCHEMY_DATABASE_URI'] = "
@@ -23,37 +23,31 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
             lines = f.readlines()
 
         new_lines = []
-        inside_old_block = False
         replaced = False
+        inserted = False
 
-        for line in lines:
-            # Nếu đang ở block URI cũ thì bỏ qua tất cả dòng liên quan
+        for i, line in enumerate(lines):
+            # Bỏ dòng URI cũ nếu có
             if "app.config['SQLALCHEMY_DATABASE_URI']" in line:
-                inside_old_block = True
                 replaced = True
                 continue
 
-
             new_lines.append(line)
 
-        # Chèn dòng mới vào trước return app
-        inserted = False
-        for i, line in enumerate(new_lines):
-            if line.strip().startswith("return app"):
-                if i > 0 and new_lines[i - 1].strip() != "":
-                    new_lines.insert(i, "\n")
-                    i += 1
-                new_lines.insert(i, new_uri_line)
+            # Tìm vị trí ngay sau dòng Flask app = ...
+            if not inserted and 'app = Flask(__name__)' in line:
+                new_lines.append(new_uri_line)
                 inserted = True
-                break
-
-        if not inserted:
-            new_lines.append("\n" + new_uri_line)
 
         with open(file_path, 'w', encoding='utf-8') as f:
             f.writelines(new_lines)
 
-        print(f"✅ Đã cập nhật SQLALCHEMY_DATABASE_URI trong file: {file_path}")
+        if replaced:
+            print(f"Đã thay thế SQLALCHEMY_DATABASE_URI trong file: {file_path}")
+        elif inserted:
+            print(f"Đã thêm SQLALCHEMY_DATABASE_URI vào file: {file_path}")
+        else:
+            print(f"Không tìm thấy vị trí phù hợp để chèn URI trong: {file_path}")
 
     except Exception as e:
-        print(f"❌ Lỗi khi xử lý file {file_path}: {e}")
+        print(f"Lỗi khi xử lý file {file_path}: {e}")
