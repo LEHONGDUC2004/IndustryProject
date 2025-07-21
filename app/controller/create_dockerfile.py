@@ -42,9 +42,15 @@ CMD ["npm", "start"]
 FROM python:3.11-slim
 WORKDIR /app
 COPY . .
-ENV PYTHONPATH=/app/{python_path}
+ENV PYTHONPATH=/{python_path}
 RUN pip install python-dotenv
+RUN apt-get update && apt-get install -y gcc libffi-dev libssl-dev
+RUN pip install --no-cache-dir cryptography
 RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 CMD ["sh", "-c", "sleep 15 && python {entrypoint}"]
 """)
+
+
+
+
