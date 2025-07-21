@@ -8,6 +8,7 @@ from app.controller.convert_db import import_sql_to_mysql
 from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
 from app.controller.replacename_db import replace_database_name
 from app.controller.find_init_file import find_flask_app_file
+from app.controller.test_requirements import ensure_requirements_at_root
 import os, shutil, zipfile, subprocess
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
@@ -68,6 +69,9 @@ def upload_all():
     # Nếu có 1 thư mục duy nhất bên trong
     subdirs = [d for d in os.listdir(extract_path) if os.path.isdir(os.path.join(extract_path, d))]
     project_real_path = os.path.join(extract_path, subdirs[0]) if len(subdirs) == 1 else extract_path
+
+    # tìm file requirements.txt có nằm đúng thư mục gốc
+    ensure_requirements_at_root(project_real_path)
 
     # Copy file .sql vào trong thư mục dự án thực tế
     shutil.copy(sql_path, os.path.join(project_real_path, sql_filename))
