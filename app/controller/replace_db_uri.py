@@ -5,7 +5,7 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
         print(f"Không tìm thấy file tại đường dẫn: {file_path}")
         return
 
-    # Tạo dòng URI mới
+    # Tạo dòng mới
     if db_info:
         new_uri_line = (
             f"    app.config['SQLALCHEMY_DATABASE_URI'] = "
@@ -26,16 +26,23 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
         replaced = False
         inserted = False
 
-        for i, line in enumerate(lines):
-            # Bỏ dòng URI cũ nếu có
-            if "app.config['SQLALCHEMY_DATABASE_URI']" in line:
+        for line in lines:
+            # XÓA nếu là dòng URI hardcoded hoặc dùng %quote()
+            if (
+                "app.config[" in line and
+                "SQLALCHEMY_DATABASE_URI" in line and
+                (
+                    '"mysql+pymysql://' in line or
+                    "'mysql+pymysql://" in line
+                )
+            ):
                 replaced = True
-                continue
+                continue  # bỏ dòng này
 
             new_lines.append(line)
 
-            # Tìm vị trí ngay sau dòng Flask app = ...
-            if not inserted and 'app = Flask(__name__)' in line:
+            # Chèn sau Flask khởi tạo
+            if not inserted and "Flask(__name__)" in line:
                 new_lines.append(new_uri_line)
                 inserted = True
 
@@ -43,11 +50,11 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
             f.writelines(new_lines)
 
         if replaced:
-            print(f"Đã thay thế SQLALCHEMY_DATABASE_URI trong file: {file_path}")
+            print(f"Đã xóa dòng SQLALCHEMY_DATABASE_URI cũ và thêm dòng mới trong: {file_path}")
         elif inserted:
-            print(f"Đã thêm SQLALCHEMY_DATABASE_URI vào file: {file_path}")
+            print(f"Đã thêm URI mới (không thấy dòng cũ) vào: {file_path}")
         else:
-            print(f"Không tìm thấy vị trí phù hợp để chèn URI trong: {file_path}")
+            print(f"Không thấy Flask app để chèn dòng mới trong: {file_path}")
 
     except Exception as e:
-        print(f"Lỗi khi xử lý file {file_path}: {e}")
+        print(f"Lỗi xử lý {file_path}: {e}")
