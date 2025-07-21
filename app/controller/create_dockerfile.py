@@ -2,12 +2,8 @@ import os
 from app.controller.find_entrypoint_and_pythonpath import find_entrypoint_and_pythonpath # Trả về entrypoint và python_path
 
 def create_dockerfile(project_path, project_type):
-    """
-    Tạo Dockerfile tương ứng với loại project (static, nodejs, flask).
-    Tự động xác định entrypoint và thư mục PYTHONPATH đối với Flask.
-    """
     if project_type not in ['static', 'nodejs', 'flask']:
-        raise ValueError("❌ Không nhận diện được loại ứng dụng. Vui lòng đảm bảo project hợp lệ.")
+        raise ValueError("Không nhận diện được loại ứng dụng. Vui lòng đảm bảo project hợp lệ.")
 
     dockerfile_path = os.path.join(project_path, 'Dockerfile')
 
@@ -42,7 +38,7 @@ CMD ["npm", "start"]
 FROM python:3.11-slim
 WORKDIR /app
 COPY . .
-ENV PYTHONPATH=/{python_path}
+ENV PYTHONPATH={f"/{python_path}" if python_path != "." else "/app"}
 RUN pip install python-dotenv
 RUN apt-get update && apt-get install -y gcc libffi-dev libssl-dev
 RUN pip install --no-cache-dir cryptography
