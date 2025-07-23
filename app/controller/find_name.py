@@ -15,5 +15,5 @@ def find_executable_python_file(project_path):
                         if '__main__' in content and 'app.run' in content:
                             return os.path.relpath(full_path, project_path)
                 except Exception as e:
-                    print(f"[⚠️] Không thể đọc file {full_path}: {e}")
+                    print(f"[] Không thể đọc file {full_path}: {e}")
     return None

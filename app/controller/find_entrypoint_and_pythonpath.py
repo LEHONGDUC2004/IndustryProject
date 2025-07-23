@@ -25,11 +25,11 @@ def find_entrypoint_and_pythonpath(project_root):
                     if has_main_check and ("app.run" in content or "create_app()" in content):
                         rel_path = os.path.relpath(full_path, project_root)
                         python_path = os.path.dirname(rel_path)
-                        print(f"✅ Tìm thấy file entrypoint: {rel_path}")
-                        print(f"🔧 PYTHONPATH: {python_path or '.'}")
+                        print(f" Tìm thấy file entrypoint: {rel_path}")
+                        print(f" PYTHONPATH: {python_path or '.'}")
                         return rel_path.replace("\\", "/"), python_path or "."
             except Exception as e:
-                print(f"❌ Lỗi đọc hoặc parse file {full_path}: {e}")
+                print(f" Lỗi đọc hoặc parse file {full_path}: {e}")
 
-    print("⚠️ Không tìm thấy entrypoint phù hợp trong dự án.")
+    print("️ Không tìm thấy entrypoint phù hợp trong dự án.")
     return None, None
