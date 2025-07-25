@@ -10,6 +10,8 @@ from app.controller.replacename_db import replace_database_name
 from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 import os, shutil, zipfile, subprocess
+from app.controller.test_host_port import find_port_host
+
 
 from app.routes.jenkins_trigger import trigger_jenkins_build
 
@@ -76,6 +78,8 @@ def upload_all():
     # Copy file .sql vào trong thư mục dự án thực tế
     shutil.copy(sql_path, os.path.join(project_real_path, sql_filename))
 
+    # kiểm tra xem port có tồn tại đúng không và kiểm tra host đã trả về đúng chưa
+    find_port_host(project_real_path)
 
     # Tìm file __init__.py để thay thế dòng URI cứng
     init_file_path = find_flask_app_file(project_real_path)
