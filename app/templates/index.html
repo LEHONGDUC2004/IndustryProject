@@ -10,6 +10,21 @@
                 <div class="bg-white p-5 rounded-3 shadow-lg w-100">
                     <h2 class="fw-bold text-dark mb-4 text-center">Triển Khai Ứng Dụng Mới</h2>
                     <form method="POST" action="{{ url_for('upload_all.upload_all') }}" enctype="multipart/form-data">
+                        <!-- FILE .ZIP -->
+                        <div class="mb-5">
+                            <label for="file_zip" class="form-label fw-medium mb-2">Tệp Mã Nguồn (.ZIP)</label>
+                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_zip" name="file_zip" accept=".zip" required>
+                        </div>
+                        <!-- FILE .SQL -->
+                        <div class="mb-4">
+                            <label for="file_sql" class="form-label fw-medium mb-2">Tệp .SQL (Cơ Sở Dữ Liệu)</label>
+                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_sql" name="file_sql" accept=".sql" required>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <label for="name_database" class="form-label fw-medium mb-2">Chúng tôi sẽ giúp bạn tạo database nhé</label>
+                        </div>
                         <!-- THÔNG TIN DB -->
                         <div class="mb-4">
                             <label for="name_database" class="form-label fw-medium mb-2">Tên Cơ Sở Dữ Liệu</label>
@@ -20,29 +35,17 @@
                             <input type="text" class="form-control rounded-2 py-3 px-3" id="name_user" name="name_user" placeholder="Nhập tên người dùng cơ sở dữ liệu" required>
                         </div>
                         <div class="mb-4">
-                            <label for="host_db" class="form-label fw-medium mb-2">Máy Chủ DB</label>
-                            <input type="text" class="form-control rounded-2 py-3 px-3" id="host_db" name="host_db" placeholder="Nhập địa chỉ máy chủ cơ sở dữ liệu" required>
+                            <label for="host_db" class="form-label fw-medium mb-2">Máy Chủ DB (Nếu không có database public (ví dụ trên aws, GCP,....) thì không cần nhập)</label>
+                            <input type="text" class="form-control rounded-2 py-3 px-3" id="host_db" name="host_db" placeholder="Nhập địa chỉ máy chủ cơ sở dữ liệu" value="db">
                         </div>
                         <div class="mb-4">
                             <label for="passwd" class="form-label fw-medium mb-2">Mật Khẩu DB</label>
                             <input type="password" class="form-control rounded-2 py-3 px-3" id="passwd" name="passwd" placeholder="Nhập mật khẩu cơ sở dữ liệu" required>
                         </div>
-
                         <hr class="my-4"> <!-- Dải phân cách -->
                         <div class="mb-4"></div> <!-- Khoảng trống sau dải phân cách -->
 
-                        <!-- FILE .SQL -->
-                        <div class="mb-4">
-                            <label for="file_sql" class="form-label fw-medium mb-2">Tệp .SQL (Cơ Sở Dữ Liệu)</label>
-                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_sql" name="file_sql" accept=".sql" required>
-                        </div>
-
-                        <!-- FILE .ZIP -->
-                        <div class="mb-5">
-                            <label for="file_zip" class="form-label fw-medium mb-2">Tệp Mã Nguồn (.ZIP)</label>
-                            <input type="file" class="form-control rounded-2 py-3 px-3" id="file_zip" name="file_zip" accept=".zip" required>
-                        </div>
-
+                        <!-- BUTTON xác nhận -->
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary rounded-3 py-3 px-4 fs-5 fw-semibold">Tải Lên và Triển Khai</button>
                         </div>
