@@ -11,7 +11,7 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
-from app.controller.count_file_zip import count_uploaded_zips
+import time
 
 
 import os
@@ -37,7 +37,7 @@ def upload_all():
         'DB_HOST': request.form.get('host_db') or 'db',  # fallback if empty
         'DB_PASSWORD': request.form.get('passwd')
     }
-    session['db_info'] = db_info
+    # session['db_info'] = db_info
 
     # 2. Save .sql file if exists
     sql_file = request.files.get('file_sql')
@@ -63,9 +63,14 @@ def upload_all():
     zip_path = os.path.join(UPLOAD_DIR, zip_filename)
     zip_file.save(zip_path)
     # Count file zip
-    zip_count = count_uploaded_zips(UPLOAD_DIR)
+
+
+
     # Extract project
     project_name = zip_filename.rsplit('.', 1)[0]
+    # tạo file đếm
+    zip_count = f"{project_name}_{int(time.time())}"
+
     extract_path = os.path.join(EXTRACT_DIR, project_name)
     os.makedirs(extract_path, exist_ok=True)
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
