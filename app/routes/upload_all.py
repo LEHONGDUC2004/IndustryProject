@@ -18,9 +18,11 @@ from app.routes.jenkins_trigger import trigger_jenkins_build
 uploadAll_bp = Blueprint('upload_all', __name__)
 
 
-UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
-EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
-REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
+# Use local directories for development, Docker volumes in production
+base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+UPLOAD_DIR = os.environ.get("UPLOAD_DIR", os.path.join(base_dir, "local_data", "uploaded"))
+EXTRACT_DIR = os.environ.get("EXTRACT_DIR", os.path.join(base_dir, "local_data", "extracted"))
+REPLACED_DIR = os.environ.get("REPLACED_DIR", os.path.join(base_dir, "local_data", "replaced"))
 
 # Đảm bảo các thư mục tồn tại khi container chạy ===
 for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
