@@ -5,16 +5,17 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
         print(f"Không tìm thấy file tại đường dẫn: {file_path}")
         return
 
-    # Tạo dòng URI mới
     if db_info:
+        # Nếu rỗng hoặc None thì gán 'db'
+        db_host = db_info.get('DB_HOST') or 'db'
         new_uri_line = (
             f"app.config['SQLALCHEMY_DATABASE_URI'] = "
-            f"'mysql+pymysql://{db_info['DB_USER']}:{db_info['DB_PASSWORD']}@{db_info['DB_HOST']}/{db_info['DB_NAME']}?charset=utf8mb4'\n"
+            f"'mysql+pymysql://{db_info['DB_USER']}:{db_info['DB_PASSWORD']}@{db_host}/{db_info['DB_NAME']}?charset=utf8mb4'\n"
         )
     else:
         new_uri_line = (
             "app.config['SQLALCHEMY_DATABASE_URI'] = (\n"
-            "    f\"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}?charset=utf8mb4\"\n"
+            "    f\"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST') or 'db'}/{os.getenv('DB_NAME')}?charset=utf8mb4\"\n"
             ")\n"
         )
 
