@@ -10,7 +10,7 @@
             </div>
 
             <div class="modal-body">
-                <form id="deploy-form" method="POST" enctype="multipart/form-data">
+                <form method="POST" action="{{ url_for('upload_all.upload_all') }}" enctype="multipart/form-data">
                     <div class="row">
                         <!-- Cột trái: Mã nguồn -->
                         <div class="col-md-6 mb-4">
