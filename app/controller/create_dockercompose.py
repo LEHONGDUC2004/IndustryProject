@@ -44,8 +44,6 @@ services:
     container_name: host_app
     ports:
       - "5000:5000"
-    depends_on:
-      - {host_db}
     environment:
       - DB_HOST={host_db}
       - DB_USER={name_user}

@@ -3,7 +3,6 @@ import subprocess
 def import_sql_to_mysql(sql_path, db_info):
     """
     Import file .sql vào container MySQL bằng docker exec.
-    Lưu ý: KHÔNG chỉ định database nếu file đã có CREATE DATABASE + USE
     """
     command = [
         'mysql',
