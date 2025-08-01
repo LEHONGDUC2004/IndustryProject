@@ -12,7 +12,7 @@ from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
 import time
-
+import random
 
 import os
 import shutil
@@ -69,7 +69,7 @@ def upload_all():
     # Extract project
     project_name = zip_filename.rsplit('.', 1)[0]
     # tạo file đếm
-    zip_count = f"{project_name}_{int(time.time())}"
+    zip_count = int(time.time()) * random.randint(1000, 9999)
 
     extract_path = os.path.join(EXTRACT_DIR, project_name)
     os.makedirs(extract_path, exist_ok=True)
