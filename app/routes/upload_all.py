@@ -33,7 +33,7 @@ def upload_all():
     db_info = {
         'DB_NAME': request.form.get('name_database'),
         'DB_USER': request.form.get('name_user'),
-        'DB_HOST': request.form.get('host_db') or 'db',  # fallback if empty
+        'DB_HOST': request.form.get('host_db'),
         'DB_PASSWORD': request.form.get('passwd')
     }
     # session['db_info'] = db_info
