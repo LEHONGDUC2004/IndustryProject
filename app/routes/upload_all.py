@@ -28,10 +28,6 @@ REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
 for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
     os.makedirs(p, exist_ok=True)
 
-def get_next_index_from_folder(base_dir="/data/deploy"):
-    existing = [name for name in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, name))]
-    return len(existing) + 1
-
 @uploadAll_bp.route('/upload_all', methods=['POST'])
 def upload_all():
     # 1. Get DB info
