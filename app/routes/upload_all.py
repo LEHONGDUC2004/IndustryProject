@@ -11,6 +11,8 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
+from app.controller.count_file_zip import count_uploaded_zips
+
 
 import os
 import shutil
@@ -25,6 +27,10 @@ REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
 # Ensure directories exist
 for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
     os.makedirs(p, exist_ok=True)
+
+def get_next_index_from_folder(base_dir="/data/deploy"):
+    existing = [name for name in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, name))]
+    return len(existing) + 1
 
 @uploadAll_bp.route('/upload_all', methods=['POST'])
 def upload_all():
@@ -60,7 +66,8 @@ def upload_all():
     zip_filename = secure_filename(zip_file.filename)
     zip_path = os.path.join(UPLOAD_DIR, zip_filename)
     zip_file.save(zip_path)
-
+    # Count file zip
+    zip_count = count_uploaded_zips(UPLOAD_DIR)
     # Extract project
     project_name = zip_filename.rsplit('.', 1)[0]
     extract_path = os.path.join(EXTRACT_DIR, project_name)
@@ -89,7 +96,8 @@ def upload_all():
                    name_user=db_info['DB_USER'],
                    host_db=db_info['DB_HOST'],
                    passwd=db_info['DB_PASSWORD'],
-                   filename_sql=sql_filename)
+                   filename_sql=sql_filename,
+                   index=zip_count)
 
     # 7. Compress modified project
     replaced_path = os.path.join(REPLACED_DIR, zip_filename)

@@ -2,7 +2,6 @@ import os
 import re
 from app.controller.find_name import find_executable_python_file
 
-
 def find_port_host(project_path):
     target_file_rel = find_executable_python_file(project_path)
     if not target_file_rel:
@@ -22,23 +21,27 @@ def find_port_host(project_path):
 
         args_str = match.group(1)
 
-        # Kiểm tra nếu chưa có host thì thêm host='0.0.0.0'
+        # Xóa tham số port=...
+        args_str = re.sub(r'port\s*=\s*\d+\s*,?', '', args_str)
+
+        # Thêm host='0.0.0.0' nếu chưa có
         if "host=" not in args_str:
-            args_str += ", host='0.0.0.0'"
+            args_str = args_str.strip()
+            if args_str:
+                args_str += ", host='0.0.0.0'"
+            else:
+                args_str = "host='0.0.0.0'"
 
-        # Thay thế port hiện tại nếu có bằng 5000
-        if "port=" in args_str:
-            args_str = re.sub(r'port\s*=\s*\d+', 'port=5000', args_str)
-        else:
-            args_str += ", port=5000"
+        # Làm sạch dấu phẩy dư thừa (nếu có)
+        args_str = re.sub(r',\s*,', ',', args_str).strip().strip(',')
 
-        # Xây dựng dòng mới
+        # Tạo dòng mới
         new_run_line = f"app.run({args_str})"
 
-        # Thay thế dòng cũ bằng dòng mới trong nội dung file
+        # Thay thế nội dung cũ
         new_content = re.sub(pattern, new_run_line, content, flags=re.DOTALL)
 
-        # Ghi lại nội dung mới vào file
+        # Ghi lại file
         with open(target_file_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
 
