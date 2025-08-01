@@ -1,0 +1,79 @@
+ body {
+            background: linear-gradient(to bottom right, #3B82F6, #6366F1); /* Màu gradient nền */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.5s ease-in-out;
+            transform: scale(1);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-header h1 {
+            font-weight: 800;
+            color: #1F2937;
+            font-size: 2.5rem;
+        }
+
+        .icon {
+            color: #06B6D4;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(-10%); }
+            50% { transform: translateY(0); }
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4B5563;
+        }
+
+        .form-control, .form-select {
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #D1D5DB;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #06B6D4;
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25);
+        }
+
+        .input-group-text {
+            background-color: #E5E7EB;
+            border-color: #D1D5DB;
+            border-radius: 0.75rem 0 0 0.75rem;
+        }
+
+        .btn-primary {
+            background-color: #10B981;
+            border-color: #10B981;
+            padding: 1rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+            border-color: #059669;
+            transform: translateY(-2px);
+        }

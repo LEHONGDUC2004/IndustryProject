@@ -16,7 +16,6 @@ COPY . /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 """)
-
         elif project_type == 'nodejs':
             f.write("""\
 FROM node:18-alpine
@@ -32,7 +31,7 @@ CMD ["npm", "start"]
             entrypoint, python_path = find_entrypoint_and_pythonpath(project_path)
 
             if not entrypoint or not python_path:
-                raise Exception("❌ Không tìm thấy entrypoint hợp lệ trong dự án Flask.")
+                raise Exception("Không tìm thấy entrypoint hợp lệ trong dự án Flask.")
 
             # Ghi Dockerfile cho Flask
             f.write(f"""\

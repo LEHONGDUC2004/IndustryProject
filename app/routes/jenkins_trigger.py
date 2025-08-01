@@ -11,7 +11,7 @@ JENKINS_API_TOKEN = '110eaba63ed58b2bf4c17121b75c764984'
 
 def trigger_jenkins_build(zip_filename):
     payload = {
-        'ZIP_NAME': zip_filename  # Truyền tên file, không phải path
+        'ZIP_NAME': zip_filename
     }
     response = requests.post(
         JENKINS_URL,

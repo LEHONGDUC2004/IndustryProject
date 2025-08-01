@@ -1,11 +1,11 @@
-{% extends 'layout/base.html' %}
+{% extends 'index.html' %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 {% endblock %}
-{% block content %}
+{% block domain %}
      <div class="mb-4">
          <label class="form-label fw-medium mb-2">Tên Miền (Đợi 1 lát để build nhé)</label>
-         <a href="">Click vào đây</a>
+         <a href="" class="color_dns">Click vào đây</a>
      </div>
 {% endblock %}
 {% block javascript %}

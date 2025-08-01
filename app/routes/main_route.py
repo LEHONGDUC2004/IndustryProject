@@ -17,6 +17,9 @@ def login():
 def upload_code():
     return render_template('upload_code.html')
 
+@main_bp.route('/deploy_code')
+def deploy_code():
+    return render_template('deploy.html')
 
 @main_bp.route('/upload_infodb')
 def upload_infodb():

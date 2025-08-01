@@ -1,73 +1,61 @@
- const dropArea = document.getElementById('drop-area');
-        const fileInput = document.getElementById('file-upload');
-        const uploadIcon = document.getElementById('upload-icon');
-        const uploadInstructions = document.getElementById('upload-instructions');
-        const fileSizeInfo = document.getElementById('file-size-info');
-        const fileDisplayArea = document.getElementById('file-display-area');
-        const selectedFileNameSpan = document.getElementById('selected-file-name');
-        const clearFileButton = document.getElementById('clear-file-button');
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
-        });
+document.addEventListener('DOMContentLoaded', function () {
+  const deployForm = document.getElementById('deploy-form');
 
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
+  const optionCreate = document.getElementById('option_create');
+  const optionExisting = document.getElementById('option_existing');
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, highlight, false);
-        });
+  const sqlGroup = document.getElementById('sql_file_group');
+  const hostGroup = document.getElementById('host_db_group');
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, unhighlight, false);
-        });
+  const fileSql = document.getElementById('file_sql');
+  const passwd = document.getElementById('passwd');
+  const confirmPasswd = document.getElementById('confirm_passwd');
 
-        function highlight(e) {
-            dropArea.classList.add('drag-over');
-        }
+  const nameUserGroup = document.getElementById('name_user_group');
+  const passwdGroup = document.getElementById('passwd_group');
+  const confirmGroup = document.getElementById('confirm_passwd_group');
 
-        function unhighlight(e) {
-            dropArea.classList.remove('drag-over');
-        }
+  // Ẩn/hiện trường theo lựa chọn CSDL
+  function toggleFields() {
+    if (optionCreate.checked) {
+      sqlGroup.style.display = 'block';
+      hostGroup.style.display = 'none';
+      fileSql.setAttribute('required', 'required');
+    } else {
+      sqlGroup.style.display = 'none';
+      hostGroup.style.display = 'block';
+      fileSql.removeAttribute('required');
+    }
+  }
 
-        dropArea.addEventListener('drop', handleDrop, false);
+  optionCreate.addEventListener('change', toggleFields);
+  optionExisting.addEventListener('change', toggleFields);
+  toggleFields(); // chạy khi load
 
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
+  // Xử lý submit form
+  deployForm.addEventListener('submit', function (e) {
+    // Nếu là kết nối CSDL có sẵn thì kiểm tra mật khẩu
+    if (optionExisting.checked) {
+      const pass1 = passwd.value.trim();
+      const pass2 = confirmPasswd.value.trim();
+      // trả về giá trị mặt định value
+      document.getElementById('host_db').value = "";
+      if (pass1.length < 6) {
+        e.preventDefault();
+        alert("Mật khẩu phải có ít nhất 6 ký tự.");
+        return false;
+      }
 
-            if (files.length > 0) {
-                fileInput.files = files;
-                updateFileDisplay(files[0]);
-            }
-        }
+      if (pass1 !== pass2) {
+        e.preventDefault();
+        alert("Mật khẩu và nhập lại mật khẩu không khớp.");
+        return false;
+      }
+    }
 
-        fileInput.addEventListener('change', function(event) {
-            updateFileDisplay(event.target.files[0]);
-        });
+    // Nếu muốn: alert khi thành công (có thể xoá nếu bạn submit thật)
+    alert("Tải lên và triển khai thành công!");
+  });
+});
 
-        function updateFileDisplay(file) {
-            if (file) {
-                selectedFileNameSpan.textContent = file.name;
-                fileDisplayArea.classList.remove('hidden');
-                uploadIcon.classList.add('hidden');
-                uploadInstructions.classList.add('hidden');
-                fileSizeInfo.classList.add('hidden');
-            } else {
-                selectedFileNameSpan.textContent = '';
-                fileDisplayArea.classList.add('hidden');
-                uploadIcon.classList.remove('hidden');
-                uploadInstructions.classList.remove('hidden');
-                fileSizeInfo.classList.remove('hidden');
-            }
-        }
-
-        clearFileButton.addEventListener('click', function() {
-            fileInput.value = '';
-            updateFileDisplay(null);
-        });
-
-        updateFileDisplay(fileInput.files[0]);

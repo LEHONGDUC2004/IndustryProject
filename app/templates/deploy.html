@@ -1,0 +1,95 @@
+<div class="modal fade" id="deployModal" tabindex="-1" aria-labelledby="deployModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-gray-900 text-white border border-gray-700 rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deployModalLabel">
+                    <i class="fa-solid fa-cloud-arrow-up me-2"></i> Triển Khai Ứng Dụng
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="deploy-form" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <!-- Cột trái: Mã nguồn -->
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-info mb-3"><i class="fas fa-code me-1"></i>Thông Tin Mã Nguồn</h6>
+                            <div class="mb-3">
+                                <label for="file_zip" class="form-label">Tệp Mã Nguồn (.ZIP)</label>
+                                <input type="file" class="form-control" id="file_zip" name="file_zip" accept=".zip"
+                                       required>
+                            </div>
+                        </div>
+                        <!--                      -->
+                        <!-- Cột phải: Cấu hình DB -->
+                        <div class="col-md-6 mb-4">
+                            <h6 class="text-info mb-3"><i class="fas fa-database me-1"></i>Cấu Hình Cơ Sở Dữ Liệu</h6>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kiểu Kết Nối CSDL</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="db_option" id="option_existing"
+                                           value="existing" checked>
+                                    <label class="form-check-label" for="option_existing">Kết nối với CSDL có
+                                        sẵn</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="db_option" id="option_create"
+                                           value="create">
+                                    <label class="form-check-label" for="option_create">Tạo CSDL mới từ file
+                                        .SQL</label>
+                                </div>
+                            </div>
+                            <!-- Nhóm input cho file SQL -->
+                            <div id="sql_file_group" class="mb-3" style="display: none;">
+                                <label for="file_sql" class="form-label">Tệp .SQL (Cơ Sở Dữ Liệu)</label>
+                                <input type="file" class="form-control" id="file_sql" name="file_sql" accept=".sql">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" style="border-top: 1px solid #444; opacity: 1;">
+                    <!-- Dòng 2: Thông tin CSDL -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name_database" class="form-label">Tên Cơ Sở Dữ Liệu</label>
+                                <input type="text" class="form-control" id="name_database" name="name_database"
+                                       required>
+                            </div>
+
+                            <div class="mb-3" id="name_user_group">
+                                <label for="name_user" class="form-label">Tên Người Dùng DB</label>
+                                <input type="text" class="form-control" id="name_user" name="name_user" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3" id="host_db_group">
+                                <label for="host_db" class="form-label">Máy Chủ DB (Host)</label>
+                                <input type="text" class="form-control" id="host_db" name="host_db">
+                            </div>
+
+                            <div class="mb-3" id="passwd_group">
+                                <label for="passwd" class="form-label">Mật Khẩu DB</label>
+                                <input type="password" class="form-control" id="passwd" name="passwd" required>
+                            </div>
+
+                            <div class="mb-3" id="confirm_passwd_group">
+                                <label for="confirm_passwd" class="form-label">Nhập Lại Mật Khẩu DB</label>
+                                <input type="password" class="form-control" id="confirm_passwd" name="confirm_passwd"
+                                       required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-rocket me-2"></i> Tải Lên và Triển Khai
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
