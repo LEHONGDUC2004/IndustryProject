@@ -11,14 +11,15 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
-
+import app.controller.counter as counter
 
 import os
 import shutil
 import zipfile
 
+
 uploadAll_bp = Blueprint('upload_all', __name__)
-zip_count = 0
+
 UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "/data/uploaded")
 EXTRACT_DIR = os.environ.get("EXTRACT_DIR", "/data/extracted")
 REPLACED_DIR = os.environ.get("REPLACED_DIR", "/data/replaced")
@@ -68,8 +69,7 @@ def upload_all():
     # Extract project
     project_name = zip_filename.rsplit('.', 1)[0]
     # tạo file đếm
-    global zip_count
-    zip_count += 1
+    counter.zip_count += 1
 
     extract_path = os.path.join(EXTRACT_DIR, project_name)
     os.makedirs(extract_path, exist_ok=True)
@@ -98,7 +98,7 @@ def upload_all():
                    host_db=db_info['DB_HOST'],
                    passwd=db_info['DB_PASSWORD'],
                    filename_sql=sql_filename,
-                   index=zip_count)
+                   index=counter.zip_count)
 
     # 7. Compress modified project
     replaced_path = os.path.join(REPLACED_DIR, zip_filename)

@@ -1,4 +1,6 @@
 import os
+import app.controller.counter as counter
+
 
 def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
     if not os.path.exists(file_path):
@@ -7,7 +9,7 @@ def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
 
     if db_info:
         # Nếu rỗng hoặc None thì gán 'db'
-        db_host = db_info.get('DB_HOST') or 'db'
+        db_host = db_info.get('DB_HOST') or f'db_{counter.zip_count}'
         new_uri_line = (
             f"app.config['SQLALCHEMY_DATABASE_URI'] = "
             f"'mysql+pymysql://{db_info['DB_USER']}:{db_info['DB_PASSWORD']}@{db_host}/{db_info['DB_NAME']}?charset=utf8mb4'\n"
