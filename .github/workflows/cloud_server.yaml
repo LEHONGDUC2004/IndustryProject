@@ -18,51 +18,46 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to EC2 via SSH
+      - name: Compress source code
+        run: |
+          tar czf app.tar.gz .
+
+      - name: Copy code to EC2
         env:
           HOST: ${{ secrets.VM_HOST }}
           USER: ${{ secrets.VM_USER }}
           PORT: ${{ secrets.VM_PORT }}
         run: |
-          ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST '
-            # Cài git nếu chưa có
-            if ! command -v git &>/dev/null; then
-              sudo apt update && sudo apt install -y git
-            fi
+          scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
 
+      - name: Deploy on EC2
+        env:
+          HOST: ${{ secrets.VM_HOST }}
+          USER: ${{ secrets.VM_USER }}
+          PORT: ${{ secrets.VM_PORT }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
             # Cài docker nếu chưa có
             if ! command -v docker &>/dev/null; then
-              sudo apt update && sudo apt install -y docker.io
+              sudo apt-get update && sudo apt-get install -y docker.io
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
-
-            # Cài docker compose plugin hoặc bản binary nếu chưa có
-            if ! docker compose version &>/dev/null && ! command -v docker-compose &>/dev/null; then
-              sudo apt update
-              if ! sudo apt install -y docker-compose-plugin; then
-                sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.2/docker-compose-linux-x86_64 \
-                  -o /usr/local/bin/docker-compose
-                sudo chmod +x /usr/local/bin/docker-compose
-              fi
+            # Cài docker compose nếu chưa có
+            if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y docker-compose-plugin || \
+              (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
             fi
-
-            # Clone repo nếu chưa có, dùng SSH
-            if [ ! -d "/home/$USER/IndustryProject" ]; then
-              git clone git@github.com:your-username/your-repo.git /home/$USER/IndustryProject
-            fi
-
+            # Giải nén source, tạo thư mục nếu chưa có
+            mkdir -p /home/$USER/IndustryProject
+            tar xzf /home/$USER/app.tar.gz -C /home/$USER/IndustryProject --strip-components=1
+            rm /home/$USER/app.tar.gz
             cd /home/$USER/IndustryProject
-
-            # Pull code nếu đã có
-            if [ -d ".git" ]; then
-              git pull
-            fi
-
-            # Dùng docker compose plugin mới trước, fallback sang docker-compose nếu chưa có
+            # Chạy docker compose
             if command -v docker-compose &>/dev/null; then
               docker-compose up -d --build
             else
               docker compose up -d --build
             fi
-          '
+          "
