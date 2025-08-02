@@ -20,7 +20,7 @@ jobs:
 
       - name: Compress source code
         run: |
-          tar czf app.tar.gz .
+          tar czf app.tar.gz . --exclude=app.tar.gz
 
       - name: Copy code to EC2
         env:
