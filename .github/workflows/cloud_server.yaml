@@ -23,39 +23,46 @@ jobs:
           HOST: ${{ secrets.VM_HOST }}
           USER: ${{ secrets.VM_USER }}
           PORT: ${{ secrets.VM_PORT }}
-          REPO_URL: ${{ secrets.REPO_URL }} # Thêm secret này là đường dẫn repo của bạn
         run: |
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST '
-            # Tạo thư mục nếu chưa có
-            if [ ! -d "/home/$USER/IndustryProject" ]; then
-              git clone "$REPO_URL" /home/$USER/IndustryProject
-            fi
-
-            # Cài đặt git nếu chưa có
-            if ! command -v git &> /dev/null; then
+            # Cài git nếu chưa có
+            if ! command -v git &>/dev/null; then
               sudo apt update && sudo apt install -y git
             fi
 
             # Cài docker nếu chưa có
-            if ! command -v docker &> /dev/null; then
-              sudo apt update
-              sudo apt install -y docker.io
+            if ! command -v docker &>/dev/null; then
+              sudo apt update && sudo apt install -y docker.io
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
 
-            # Cài docker compose nếu chưa có (plugin mới)
-            if ! docker compose version &> /dev/null; then
+            # Cài docker compose plugin hoặc bản binary nếu chưa có
+            if ! docker compose version &>/dev/null && ! command -v docker-compose &>/dev/null; then
               sudo apt update
-              sudo apt install -y docker-compose-plugin
+              if ! sudo apt install -y docker-compose-plugin; then
+                sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.2/docker-compose-linux-x86_64 \
+                  -o /usr/local/bin/docker-compose
+                sudo chmod +x /usr/local/bin/docker-compose
+              fi
+            fi
+
+            # Clone repo nếu chưa có
+            if [ ! -d "/home/$USER/IndustryProject" ]; then
+              git clone https://github.com/your-username/your-repo.git /home/$USER/IndustryProject
             fi
 
             cd /home/$USER/IndustryProject
 
-            # Nếu đã clone rồi thì pull code mới
+            # Pull code nếu đã có
             if [ -d ".git" ]; then
               git pull
             fi
 
-            docker compose up -d --build
+            # Dùng docker compose plugin mới trước, fallback sang docker-compose nếu chưa có
+            if command -v docker-compose &>/dev/null; then
+              docker-compose up -d --build
+            else
+              docker compose up -d --build
+            fi
           '
