@@ -57,21 +57,22 @@ jobs:
               (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
             fi
 
-            # Thêm user vào nhóm docker (có hiệu lực sau khi login lại)
-            sudo usermod -aG docker $USER
+            # Thêm user vào nhóm docker
+            sudo usermod -aG docker ubuntu
 
-            # Cho phép user dùng sudo không cần nhập password
-            echo 'ubuntu NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$USER
+            # Ghi đúng định dạng sudoers để tránh hỏng sudo
+            echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
 
             # Tạo thư mục và giải nén mã nguồn
-            mkdir -p /home/$USER/IndustryProject
-            tar xzf /home/$USER/app.tar.gz -C /home/$USER/IndustryProject --strip-components=1
-            rm /home/$USER/app.tar.gz
-            cd /home/$USER/IndustryProject
+            mkdir -p /home/ubuntu/IndustryProject
+            tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
+            rm /home/ubuntu/app.tar.gz
+            cd /home/ubuntu/IndustryProject
 
-            # Triển khai ứng dụng bằng docker compose (dùng sudo tạm thời)
+            # Chạy docker compose
             if command -v docker-compose &>/dev/null; then
               sudo docker-compose up -d --build
             else
               sudo docker compose up -d --build
+            fi
           "
