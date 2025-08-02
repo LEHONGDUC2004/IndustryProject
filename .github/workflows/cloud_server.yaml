@@ -25,6 +25,7 @@ jobs:
               --exclude=__pycache__ \
               --exclude=.git \
               --exclude=node_modules \
+              --ignore-failed-read \
               -czf app.tar.gz .
 
       - name: Copy code to EC2
@@ -42,27 +43,27 @@ jobs:
           PORT: ${{ secrets.VM_PORT }}
         run: |
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
-            # Cài Docker nếu chưa có
+            # Cài docker nếu chưa có
             if ! command -v docker &>/dev/null; then
               sudo apt-get update && sudo apt-get install -y docker.io
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
 
-            # Cài Docker Compose nếu chưa có
+            # Cài docker compose nếu chưa có
             if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
               sudo apt-get update
               sudo apt-get install -y docker-compose-plugin || \
               (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
             fi
 
-            # Tạo thư mục, giải nén mã nguồn
+            # Tạo thư mục, giải nén source
             mkdir -p /home/$USER/IndustryProject
             tar xzf /home/$USER/app.tar.gz -C /home/$USER/IndustryProject --strip-components=1
             rm /home/$USER/app.tar.gz
             cd /home/$USER/IndustryProject
 
-            # Chạy Docker Compose để build và khởi động
+            # Chạy docker compose
             if command -v docker-compose &>/dev/null; then
               docker-compose up -d --build
             else
