@@ -1,10 +1,34 @@
-name: hello world
+name: CI/CD Pipeline
+
 on:
   push:
-   branches: [main]
+    branches: [ main ]
+
 jobs:
-  say-hello:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: add
-        run: echo helloworld
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Thiết lập Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Cài dependencies
+        run: pip install -r requirements.txt
+
+      - name: Chạy unit test
+        run: pytest
+
+      - name: Deploy lên server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          password: ${{ secrets.VM_PASSWORD }}
+          script: |
+            cd /path/to/app
+            git pull
+            docker-compose up -d --build
