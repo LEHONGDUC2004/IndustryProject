@@ -20,7 +20,6 @@ jobs:
 
       - name: Compress source code
         run: |
-          # Tạo file nén, loại trừ chính nó và các file không cần thiết
           tar --exclude=app.tar.gz \
               --exclude=__pycache__ \
               --exclude=.git \
@@ -75,7 +74,4 @@ jobs:
               sudo docker-compose up -d --build
             else
               sudo docker compose up -d --build
-            fi
-
-            echo '[INFO] Đã thêm $USER vào nhóm docker. Đăng nhập lại để dùng docker ps không cần sudo.'
           "

@@ -32,7 +32,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --chown=appuser:appuser . .
 
 # Mở port 5000
-EXPOSE 5000
+EXPOSE 80
 
 # Chạy ứng dụng
 CMD ["sh", "-c", "sleep 15 && python run.py"]
