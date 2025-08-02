@@ -25,7 +25,7 @@ jobs:
       - name: Deploy lên server
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.HOSTDUC }}
+          host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           password: ${{ secrets.VM_PASSWORD }}
           script: |
