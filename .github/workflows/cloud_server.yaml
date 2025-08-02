@@ -43,30 +43,39 @@ jobs:
           PORT: ${{ secrets.VM_PORT }}
         run: |
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
-            # Cài docker nếu chưa có
+            # Cài Docker nếu chưa có
             if ! command -v docker &>/dev/null; then
-              sudo apt-get update && sudo apt-get install -y docker.io
+              sudo apt-get update
+              sudo apt-get install -y docker.io
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
 
-            # Cài docker compose nếu chưa có
+            # Cài Docker Compose nếu chưa có
             if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
               sudo apt-get update
               sudo apt-get install -y docker-compose-plugin || \
               (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
             fi
 
-            # Giải nén source
+            # Thêm user vào nhóm docker (có hiệu lực sau khi login lại)
+            sudo usermod -aG docker $USER
+
+            # Cho phép user dùng sudo không cần nhập password
+            echo '$USER ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$USER
+
+            # Tạo thư mục và giải nén mã nguồn
             mkdir -p /home/$USER/IndustryProject
             tar xzf /home/$USER/app.tar.gz -C /home/$USER/IndustryProject --strip-components=1
             rm /home/$USER/app.tar.gz
             cd /home/$USER/IndustryProject
 
-            # Chạy docker compose bằng sudo
+            # Triển khai ứng dụng bằng docker compose (dùng sudo tạm thời)
             if command -v docker-compose &>/dev/null; then
               sudo docker-compose up -d --build
             else
               sudo docker compose up -d --build
             fi
+
+            echo '[INFO] Đã thêm $USER vào nhóm docker. Đăng nhập lại để dùng docker ps không cần sudo.'
           "
