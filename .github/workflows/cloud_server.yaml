@@ -25,7 +25,7 @@ jobs:
           PORT: ${{ secrets.VM_PORT }}
         run: |
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
-            ls -la
+            cd /home/ubuntu/IndustryProject
             git pull
-            docker-compose up -d --build
+            docker compose up -d --build
           "
