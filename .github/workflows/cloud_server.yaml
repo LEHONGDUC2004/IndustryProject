@@ -47,9 +47,9 @@ jobs:
               fi
             fi
 
-            # Clone repo nếu chưa có
+            # Clone repo nếu chưa có, dùng SSH
             if [ ! -d "/home/$USER/IndustryProject" ]; then
-              git clone https://github.com/your-username/your-repo.git /home/$USER/IndustryProject
+              git clone git@github.com:your-username/your-repo.git /home/$USER/IndustryProject
             fi
 
             cd /home/$USER/IndustryProject
