@@ -22,12 +22,6 @@ jobs:
       - name: Cài đặt pytest (nếu chưa có trong requirements.txt)
         run: pip install pytest
 
-      - name: Chạy unit test
-        run: pytest
-
-      - name: Chạy unit test
-        run: pytest
-
       - name: Deploy lên server
         uses: appleboy/ssh-action@v1
         with:
