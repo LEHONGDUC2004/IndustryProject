@@ -19,6 +19,12 @@ jobs:
       - name: Cài dependencies
         run: pip install -r requirements.txt
 
+      - name: Cài đặt pytest (nếu chưa có trong requirements.txt)
+        run: pip install pytest
+
+      - name: Chạy unit test
+        run: pytest
+
       - name: Chạy unit test
         run: pytest
 
