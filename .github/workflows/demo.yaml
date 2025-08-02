@@ -13,6 +13,7 @@ jobs:
 
       - name: Deploy app
         run: |
-          cd /path/to/app
+          pwd
+          ls -la
           git pull
           docker-compose up -d --build
