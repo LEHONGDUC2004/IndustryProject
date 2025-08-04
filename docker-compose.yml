@@ -10,9 +10,12 @@ services:
       - "80:80"
     volumes:
       - ./:/app
-      - /home/lehongduc3491/uploaded_source_code:/data/uploaded
-      - /home/lehongduc3491/extracted_source_code:/data/extracted
-      - /home/lehongduc3491/replaced_compressed_source_code:/data/replaced
+#      - /home/lehongduc3491/uploaded_source_code:/data/uploaded
+#      - /home/lehongduc3491/extracted_source_code:/data/extracted
+#      - /home/lehongduc3491/replaced_compressed_source_code:/data/replaced
+      - /home/ubuntu/uploaded_source_code:/data/uploaded
+      - /home/ubuntu/extracted_source_code:/data/extracted
+      - /home/ubuntu/replaced_compressed_source_code:/data/replaced
     environment:
       - FLASK_ENV=development
       - UPLOAD_DIR=/data/uploaded

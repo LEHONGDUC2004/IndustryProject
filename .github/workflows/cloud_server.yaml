@@ -60,9 +60,9 @@ jobs:
             # Thêm user vào nhóm docker
             sudo usermod -aG docker ubuntu
              
-            sudo chmod -R 777 /data/uploaded/
-            sudo chmod -R 777 /data/extracted
-            sudo chmod -R 777 /data/replaced/
+            sudo chmod -R 777 /home/ubuntu/uploaded_source_code
+            sudo chmod -R 777 /home/ubuntu/extracted_source_code
+            sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
           
             # Ghi đúng định dạng sudoers để tránh hỏng sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
