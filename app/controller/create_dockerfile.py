@@ -50,7 +50,6 @@ ENV PYTHONPATH={pythonpath}
 RUN apt-get update && apt-get install -y gcc libffi-dev libssl-dev
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install python-dotenv cryptography
-EXPOSE 5000
 CMD ["sh", "-c", "sleep 15 && python -m {module_entry}"]
 """)
         else:
