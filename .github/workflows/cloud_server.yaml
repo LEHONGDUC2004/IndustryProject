@@ -45,7 +45,7 @@ jobs:
             # Cài Docker nếu chưa có
             if ! command -v docker &>/dev/null; then
               sudo apt-get update
-              sudo apt-get install -y docker.io
+              sudo apt-get install -y docker.io ansible sshpass
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
@@ -68,6 +68,7 @@ jobs:
             tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
             rm /home/ubuntu/app.tar.gz
             cd /home/ubuntu/IndustryProject
+
 
             # Chạy docker compose
             if command -v docker-compose &>/dev/null; then
