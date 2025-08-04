@@ -31,5 +31,3 @@ USE `{new_db_name}`;\n\n"""
     # Ghi đè lại file
     with open(sql_path, 'w', encoding='utf-8') as f:
         f.write(sql_content)
-
-    print("✅ Đã cập nhật file .sql thành công.")
