@@ -3,8 +3,20 @@
             background-color: #121212;
             color: #E0E0E0;
             overflow: hidden;
-        }
+            }
+    .edit-jenkins-wrapper {
+        overflow: hidden;
+        width: 100%;
+        height: 520px;
+    }
 
+    .edit-jenkins {
+        width: 1280px;
+        height: 100%;
+        transform: scale(0.75); /* scale nhỏ để vừa khung */
+        transform-origin: top left;
+        border: none;
+    }
         .header {
             background-color: #1E1E1E;
             border-bottom: 1px solid #333;
@@ -65,16 +77,4 @@
         }
         .color_dns:hover{
            color: red;
-        }
-        .jenkins{
-                overflow: hidden;
-                height: 420px;
-        }
-        .edit-jenkins {
-                width=100%;
-                height=520px;
-                transform: scale(1);
-                transform-origin: top;
-                border: none;
-                overflow: hidden;
         }
