@@ -11,7 +11,7 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
-from app.routes.jenkins_trigger import jenkins_dashboard
+
 import app.controller.counter as counter
 
 
