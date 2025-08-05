@@ -55,8 +55,21 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-setInterval(function() {
-    document.getElementById("jenkins-frame").contentWindow.location.reload();
-  }, 1000);
+window.onload = function() {
+  try {
+    // Tăng thời gian lên 5 giây để đảm bảo iframe tải ổn định
+    setInterval(function() {
+      var frame = document.getElementById("jenkins-frame");
+      if (frame) {
+        console.log("Đang reload iframe...");
+        frame.src = frame.src;  // Cách an toàn hơn để reload iframe
+      } else {
+        console.log("Không tìm thấy iframe với id 'jenkins-frame'");
+      }
+    }, 5000);
+  } catch (e) {
+    console.error("Lỗi khi reload iframe:", e);
+  }
+};
 
 
