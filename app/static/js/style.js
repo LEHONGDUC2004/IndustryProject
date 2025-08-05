@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
       fileSql.removeAttribute('required');
     }
   }
-
   optionCreate.addEventListener('change', toggleFields);
   optionExisting.addEventListener('change', toggleFields);
   toggleFields(); // chạy khi load
