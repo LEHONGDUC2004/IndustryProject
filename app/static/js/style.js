@@ -12,10 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const passwd = document.getElementById('passwd');
   const confirmPasswd = document.getElementById('confirm_passwd');
 
-  const nameUserGroup = document.getElementById('name_user_group');
-  const passwdGroup = document.getElementById('passwd_group');
-  const confirmGroup = document.getElementById('confirm_passwd_group');
-
   // Ẩn/hiện trường theo lựa chọn CSDL
   function toggleFields() {
     if (optionCreate.checked) {
@@ -58,4 +54,10 @@ document.addEventListener('DOMContentLoaded', function () {
     alert("Tải lên và triển khai thành công!");
   });
 });
+
+// Làm mới iframe Jenkins sau 5 giây
+setTimeout(function() {
+    document.getElementById("jenkins-frame").contentWindow.location.reload();
+}, 5000);
+
 
