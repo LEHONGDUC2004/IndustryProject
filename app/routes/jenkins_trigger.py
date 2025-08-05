@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, Response
 import requests, logging
 
-upload_bp = Blueprint('upload', __name__)
+jenkins_bp = Blueprint('jenkins_view', __name__)
 logger = logging.getLogger(__name__)
 
 # Jenkins config
@@ -27,13 +27,13 @@ def trigger_jenkins_build(zip_filename):
 
 
 # Thêm route để hiển thị trang có iframe Jenkins
-@upload_bp.route('/jenkins-dashboard')
+@jenkins_bp.route('/jenkins-dashboard')
 def jenkins_dashboard():
     return render_template('jenkins_dashboard.html')
 
 
 # Thêm route proxy để bypass X-Frame-Options
-@upload_bp.route('/jenkins-proxy/<path:jenkins_path>')
+@jenkins_bp.route('/jenkins-proxy/<path:jenkins_path>')
 def jenkins_proxy(jenkins_path):
     # Xây dựng URL hoàn chỉnh để truy cập Jenkins
     url = f"{JENKINS_BASE_URL}/{jenkins_path}"
@@ -59,7 +59,7 @@ def jenkins_proxy(jenkins_path):
 
 
 # Thêm route trực tiếp đến MyView (tùy chọn)
-@upload_bp.route('/jenkins-view')
+@jenkins_bp.route('/jenkins-view')
 def jenkins_view():
     return f"""
     <!DOCTYPE html>
