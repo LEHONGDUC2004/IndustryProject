@@ -11,7 +11,9 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
+from app.routes.jenkins_trigger import jenkins_dashboard
 import app.controller.counter as counter
+
 
 import os
 import shutil
@@ -107,5 +109,4 @@ def upload_all():
                         base_dir=os.path.basename(project_real_path))
 
     trigger_jenkins_build(zip_filename)
-
-    return redirect(url_for('main.success'))
+    return redirect(url_for('main.success', zip_name=zip_filename))
