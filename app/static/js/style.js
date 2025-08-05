@@ -66,7 +66,7 @@ window.onload = function() {
       } else {
         console.log("Không tìm thấy iframe với id 'jenkins-frame'");
       }
-    }, 5000);
+    }, 10000);
   } catch (e) {
     console.error("Lỗi khi reload iframe:", e);
   }
