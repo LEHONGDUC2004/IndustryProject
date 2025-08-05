@@ -55,9 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// Làm mới iframe Jenkins sau 5 giây
-setTimeout(function() {
+setInterval(function() {
     document.getElementById("jenkins-frame").contentWindow.location.reload();
-}, 5000);
+  }, 1000);
 
 
