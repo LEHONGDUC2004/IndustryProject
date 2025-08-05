@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, Response
 import requests, logging
 
 upload_bp = Blueprint('upload', __name__)
