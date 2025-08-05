@@ -66,3 +66,15 @@
         .color_dns:hover{
            color: red;
         }
+        .jenkins{
+                overflow: hidden;
+                height: 420px;
+        }
+        .edit-jenkins {
+                width=100%;
+                height=520px;
+                transform: scale(1);
+                transform-origin: top;
+                border: none;
+                overflow: hidden;
+        }
