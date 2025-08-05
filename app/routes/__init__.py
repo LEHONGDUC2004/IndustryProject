@@ -5,4 +5,4 @@ from app.routes.jenkins_trigger import jenkins_view
 def register_routes(app):
     app.register_blueprint(main_bp, url_prefix='/')
     app.register_blueprint(uploadAll_bp, url_prefix='/upload_all')
-    app.register_blueprint(uploadAll_bp, url_prefix='/jenkins_view')
+    app.register_blueprint(jenkins_view, url_prefix='/jenkins_view')
