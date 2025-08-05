@@ -11,7 +11,7 @@
     }
 
     .edit-jenkins {
-        width: 1280px;
+        width: 1600px;
         height: 100%;
         transform: scale(0.75); /* scale nhỏ để vừa khung */
         transform-origin: top left;
