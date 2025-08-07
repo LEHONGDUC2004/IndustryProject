@@ -7,7 +7,6 @@ def create_dockerfile(project_path, project_type):
     dockerfile_path = os.path.join(project_path, 'Dockerfile')
 
     with open(dockerfile_path, 'w', encoding='utf-8') as f:
-        # 1. STATIC PROJECT (HTML/CSS only)
         if project_type == 'static':
             f.write("""\
 FROM nginx:stable-alpine
@@ -15,8 +14,6 @@ COPY . /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 """)
-
-        # 2. NODEJS PROJECT
         elif project_type == 'nodejs':
             f.write("""\
 FROM node:18-alpine
@@ -26,8 +23,6 @@ RUN npm install
 EXPOSE 3000
 CMD ["npm", "start"]
 """)
-
-        # 3. FLASK PROJECT (python backend)
         elif project_type == 'flask':
             entrypoint, python_path = find_entrypoint_and_pythonpath(project_path)
             if not entrypoint or not python_path:

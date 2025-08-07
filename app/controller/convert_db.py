@@ -1,9 +1,6 @@
 import subprocess
 
 def import_sql_to_mysql(sql_path, db_info):
-    """
-    Import file .sql vào container MySQL bằng docker exec.
-    """
     command = [
         'mysql',
         f"-h{db_info['DB_HOST']}",
@@ -23,4 +20,4 @@ def import_sql_to_mysql(sql_path, db_info):
                 print("Import thất bại:")
                 print(err.decode())
     except FileNotFoundError:
-        print(" Không tìm thấy lệnh docker. Có thể đang chạy trong container không có Docker CLI.")
+        print(" không tìm thấy lệnh docker")
