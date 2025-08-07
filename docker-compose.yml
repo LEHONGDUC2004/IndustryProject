@@ -19,7 +19,7 @@ services:
     environment:
       - FLASK_ENV=development
       - UPLOAD_DIR=/data/uploaded
-      - EXTRACT_DIR=/data/extracted
+      - EXTRACT_DIR=/data/extracted`
       - REPLACED_DIR=/data/replaced
       - DB_HOST=db
       - DB_USER=root
