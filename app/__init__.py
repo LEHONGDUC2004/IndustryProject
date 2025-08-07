@@ -1,12 +1,14 @@
 from flask import Flask
 from app.extensions import db, login_manager
-from app.models import Account
+from app.models import User
 
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret123456'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db:3306/upload_app?charset=utf8mb4'
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        "mysql+pymysql://lehongduc3491:123456789a@db-test.cb7hspzehogr.us-east-1.rds.amazonaws.com:3306/industry_project?charset=utf8mb4"
+    )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
@@ -16,7 +18,7 @@ def create_app():
     # đăng ký user_loader
     @login_manager.user_loader
     def load_user(user_id):
-        return Account.query.get(int(user_id))
+        return User.query.get(int(user_id))
 
     from app.routes import register_routes
     register_routes(app)

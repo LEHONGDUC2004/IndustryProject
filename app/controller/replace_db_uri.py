@@ -1,74 +1,40 @@
+from app.controller.cryto_utils import decrypt_data
 import os
-import app.controller.counter as counter
 
-
-def replace_or_add_sqlalchemy_uri(file_path, db_info=None):
+def replace_or_add_sqlalchemy_uri(file_path, project=None):
     if not os.path.exists(file_path):
-        print(f"Không tìm thấy file tại đường dẫn: {file_path}")
+        print(f"Không tìm thấy file tại: {file_path}")
         return
 
-    if db_info:
-        # Nếu rỗng hoặc None thì gán 'db'
-        db_host = db_info.get('DB_HOST') or f'db_{counter.zip_count}'
-        new_uri_line = (
-            f"app.config['SQLALCHEMY_DATABASE_URI'] = "
-            f"'mysql+pymysql://{db_info['DB_USER']}:{db_info['DB_PASSWORD']}@{db_host}/{db_info['DB_NAME']}?charset=utf8mb4'\n"
-        )
-    else:
-        new_uri_line = (
-            "app.config['SQLALCHEMY_DATABASE_URI'] = (\n"
-            "    f\"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST') or 'db'}/{os.getenv('DB_NAME')}?charset=utf8mb4\"\n"
-            ")\n"
-        )
+    if not project:
+        print("Project không được truyền vào")
+        return
 
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+    #  Giải mã thông tin
+    real_db_name = project.name_database
+    real_user = project.name_user
+    real_pass = project.passwd
+    real_host = project.name_host
 
-        new_lines = []
-        inserted = False
-        replaced = False
-        insert_index = None
-        base_indent = ""
+    new_uri_line = (
+        "app.config['SQLALCHEMY_DATABASE_URI'] = "
+        f"'mysql+pymysql://{real_user}:{real_pass}@{real_host}/{real_db_name}?charset=utf8mb4'"
+    )
 
-        for i, line in enumerate(lines):
-            stripped = line.strip()
+    #  Thay vào file
+    with open(file_path, 'r+', encoding='utf-8') as f:
+        content = f.read()
+        f.seek(0)
 
-            # Nếu là dòng chứa app = Flask(__name__)
-            if 'app = Flask(__name__)' in stripped:
-                insert_index = i + 1
-                base_indent = line[:len(line) - len(line.lstrip())]
-
-            # Nếu là dòng chứa URI cũ (dù có thụt dòng hay không)
-            if (
-                "app.config[" in stripped and
-                "SQLALCHEMY_DATABASE_URI" in stripped and
-                (
-                    "'mysql+pymysql://" in stripped or
-                    '"mysql+pymysql://' in stripped or
-                    '%quote(' in stripped
-                )
-            ):
-                replaced = True
-                continue  # Xoá dòng này
-
-            new_lines.append(line)
-
-        # Chèn dòng mới sau Flask khởi tạo
-        if insert_index is not None:
-            new_lines.insert(insert_index, base_indent + new_uri_line)
-            inserted = True
-
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
-
-        # Thông báo
-        if replaced and inserted:
-            print(f"Đã thay thế URI cũ bằng URI mới trong: {file_path}")
-        elif inserted:
-            print(f"Đã thêm URI mới vào sau Flask khởi tạo trong: {file_path}")
+        if 'SQLALCHEMY_DATABASE_URI' in content:
+            # Ghi đè
+            lines = content.splitlines()
+            lines = [
+                new_uri_line if 'SQLALCHEMY_DATABASE_URI' in line else line
+                for line in lines
+            ]
+            f.write('\n'.join(lines))
         else:
-            print(f"Không tìm thấy Flask app để chèn URI mới trong: {file_path}")
-
-    except Exception as e:
-        print(f"Lỗi khi xử lý file {file_path}: {e}")
+            # Ghi thêm nếu chưa có
+            f.write('\n' + new_uri_line)
+        f.truncate()

@@ -11,6 +11,10 @@ from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
+from app.models import Project, Deployment
+from flask_login import current_user
+from app import db
+from app.controller.cryto_utils import encrypt_data
 
 import app.controller.counter as counter
 
@@ -90,10 +94,10 @@ def upload_all():
     find_port_host(project_real_path)
 
     init_file_path = find_flask_app_file(project_real_path)
-    replace_or_add_sqlalchemy_uri(init_file_path, db_info)
-
     project_type = detect_project_type(project_real_path)
+
     create_dockerfile(project_real_path, project_type)
+
     create_compose(docker_path=project_real_path,
                    name_database=db_info['DB_NAME'],
                    name_user=db_info['DB_USER'],
@@ -102,11 +106,57 @@ def upload_all():
                    filename_sql=sql_filename,
                    index=counter.zip_count)
 
+    project = Project(
+        name=project_name,
+        account_id=current_user.id,
+        name_sql=sql_filename,
+        name_database=db_info['DB_NAME'],
+        name_host=db_info['DB_HOST'],
+        name_user=db_info['DB_USER'],
+        passwd=db_info['DB_PASSWORD']
+    )
+
+    replace_or_add_sqlalchemy_uri(init_file_path, project)
+
+    # mã hóa và lưu vào DB
+    project.name_database = encrypt_data(project.name_database)
+    project.name_host = encrypt_data(project.name_host)
+    project.name_user = encrypt_data(project.name_user)
+    project.passwd = encrypt_data(project.passwd)
+
+    db.session.add(project)
+    db.session.commit()
+    session['last_project_id'] = project.id
     # 7. Compress modified project
     replaced_path = os.path.join(REPLACED_DIR, zip_filename)
     shutil.make_archive(replaced_path.rsplit('.', 1)[0], 'zip',
                         root_dir=os.path.dirname(project_real_path),
                         base_dir=os.path.basename(project_real_path))
 
+
     trigger_jenkins_build(zip_filename)
-    return redirect(url_for('main.success', zip_name=zip_filename))
+    return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
+
+
+@uploadAll_bp.route('/deploy_website', methods=['POST'])
+def deploy_website():
+    project_id = session.get('last_project_id')
+    if not project_id:
+        # Không tìm thấy project_id trong session
+        return "No project to deploy.", 400
+
+    project = Project.query.get(project_id)
+    if not project:
+        # Không tìm thấy project trong DB
+        return "Project not found.", 404
+
+    deployment = Deployment(
+        project_id=project.id,
+        zip_filename=project.name + ".zip",
+        status="pending",
+        logs="NO",
+        build_time="10s"
+    )
+    db.session.add(deployment)
+    db.session.commit()
+    return redirect(url_for('main.success'))

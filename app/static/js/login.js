@@ -1,10 +1,16 @@
-   document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.getElementById('login-form');
 
-        // Xử lý sự kiện đăng nhập
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.location.href = 'index.html';
-            alert('Đăng nhập thành công! Sẽ chuyển hướng đến trang triển khai.');
-        });
-    });
+
+function changeTypePassword() {
+  const passwordInput = document.getElementById('password');
+  const icon = document.getElementById('togglePassword');
+
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    icon.classList.remove('fa-eye-slash');
+    icon.classList.add('fa-eye');
+  } else {
+    passwordInput.type = 'password';
+    icon.classList.remove('fa-eye');
+    icon.classList.add('fa-eye-slash');
+  }
+}

@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'indexLogin.html' %}
 {% block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
 {% endblock %}
@@ -6,7 +6,8 @@
 <div class="mb-4">
     <label class="form-label fw-medium mb-2">Tên Miền (Đợi 1 lát để build nhé)</label>
     <div class="edit-jenkins-wrapper">
-        <iframe src="http://3.212.74.20/" class="edit-jenkins" id="jenkins-frame" frameborder="0" scrolling="no"></iframe>
+        <iframe src="http://3.212.74.20/" class="edit-jenkins" id="jenkins-frame" frameborder="0"
+                scrolling="no"></iframe>
     </div>
     <hr class="my-6 border-gray-300">
     <div class="text-center mt-4">
@@ -16,6 +17,11 @@
            rel="noopener noreferrer">
             Truy Cập Website Của Bạn Tại Đây.
         </a>
+        <form method="POST" action="{{ url_for('upload_all.deploy_website') }}" enctype="multipart/form-data">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-rocket me-2"></i> Xem Lai
+            </button>
+        </form>
     </div>
 </div>
 {% endblock %}
