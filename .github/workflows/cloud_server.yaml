@@ -53,12 +53,15 @@ jobs:
 
             # Thêm user vào nhóm docker
             sudo usermod -aG docker ubuntu
-
-            sudo chmod -R 755 /home/ubuntu/uploaded_source_code
-            sudo chmod -R 755 /home/ubuntu/extracted_source_code
-            sudo chmod -R 755 /home/ubuntu/replaced_compressed_source_code
+            sudo mkdir /home/ubuntu/uploaded_source_code
+            sudo mkdir /home/ubuntu/extracted_source_code
+            sudo mkdir /home/ubuntu/replaced_compressed_source_code
+          
+            sudo chmod -R 777 /home/ubuntu/uploaded_source_code
+            sudo chmod -R 777 /home/ubuntu/extracted_source_code
+            sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
             
-            sudo chmod 755 /home/ubuntu/deploy_from_s3.sh
+            sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
 
             # Ghi đúng định dạng sudoers để tránh hỏng sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
@@ -76,4 +79,5 @@ jobs:
             cd /home/ubuntu/IndustryProject
             sudo docker-compose up -d --build
           "
+        
 
