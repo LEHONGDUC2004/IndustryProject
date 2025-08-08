@@ -45,10 +45,18 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
             # Cài Docker nếu chưa có
             sudo apt update
-            if ! command -v docker &>/dev/null; then
-              sudo apt install -y docker-compose-plugin ansible sshpass
+             if ! command -v docker &>/dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y docker.io ansible sshpass
               sudo systemctl enable docker
               sudo systemctl start docker
+            fi
+
+            # Cài Docker Compose nếu chưa có
+            if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
+              sudo apt-get update
+              sudo apt-get install -y docker-compose-plugin || \
+              (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
             fi
 
             # Thêm user vào nhóm docker
@@ -61,7 +69,7 @@ jobs:
             sudo chmod -R 777 /home/ubuntu/extracted_source_code
             sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
             
-            sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
+
 
             # Ghi đúng định dạng sudoers để tránh hỏng sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
@@ -73,6 +81,7 @@ jobs:
             cp -r /home/ubuntu/IndustryProject/project-ansible /home/ubuntu/project-ansible
             cp /home/ubuntu/IndustryProject/deploy_from_s3.sh /home/ubuntu/deploy_from_s3.sh
             cd
+            sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
             cd /home/ubuntu/project-ansible
             ansible-playbook -i inventory.ini playbook.yml
             cd
