@@ -14,7 +14,7 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'
-
+    login_manager.login_message = 'Vui lòng đăng nhập để tiếp tục.'
     # đăng ký user_loader
     @login_manager.user_loader
     def load_user(user_id):

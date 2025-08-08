@@ -1,5 +1,4 @@
 
-
 function changeTypePassword() {
   const passwordInput = document.getElementById('password');
   const icon = document.getElementById('togglePassword');

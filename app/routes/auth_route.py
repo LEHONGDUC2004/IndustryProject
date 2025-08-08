@@ -32,7 +32,8 @@ def user_signin():
 @auth_bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    session.clear()
+    return redirect(url_for('main.login'))
 
 @auth_bp.route('/register/data', methods=['GET', 'POST'])
 def user_register():

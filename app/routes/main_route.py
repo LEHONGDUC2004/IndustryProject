@@ -12,20 +12,20 @@ def index():
 
 @main_bp.route('/upload_code')
 def upload_code():
-    return render_template('upload_code.html')
+    return render_template('upload_code.html',name_user=current_user.name_account)
 
 @main_bp.route('/deploy_code')
 def deploy_code():
-    return render_template('deploy.html')
+    return render_template('deploy.html',name_user=current_user.name_account)
 
 @main_bp.route('/upload_infodb')
 def upload_infodb():
-    return render_template('upload/info_db.html')
+    return render_template('upload/info_db.html',name_user=current_user.name_account)
 
 @main_bp.route("/success")
 def success():
     jobs = session.get('jobs', [])
-    return render_template("success.html", jobs=jobs)
+    return render_template("success.html", jobs=jobs,name_user=current_user.name_account)
 
 @main_bp.route('/register')
 def register():

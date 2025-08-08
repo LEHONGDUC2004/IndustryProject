@@ -11,6 +11,12 @@ JENKINS_VIEW_URL = f"{JENKINS_BASE_URL}/view/MyView"
 JENKINS_USER = 'lehongduc3491'
 JENKINS_API_TOKEN = '11e592530e49b4dde7bdf44ee65b6e9685'
 
+session = requests.session()
+session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
+session.headers.update({"User-Agent": "upload-service/1.0"})
+
+
+
 
 # Trigger build with ZIP_NAME param
 def trigger_jenkins_build(zip_filename):

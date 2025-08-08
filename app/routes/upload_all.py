@@ -12,13 +12,11 @@ from app.controller.test_requirements import ensure_requirements_at_root
 from app.routes.jenkins_trigger import trigger_jenkins_build
 from app.controller.test_host_port import find_port_host
 from app.models import Project, Deployment
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app import db
 from app.controller.cryto_utils import encrypt_data
 
 import app.controller.counter as counter
-
-
 import os
 import shutil
 import zipfile
@@ -35,6 +33,7 @@ for p in [UPLOAD_DIR, EXTRACT_DIR, REPLACED_DIR]:
     os.makedirs(p, exist_ok=True)
 
 @uploadAll_bp.route('/upload_all', methods=['POST'])
+@login_required
 def upload_all():
     # 1. Get DB info
     db_info = {
@@ -139,6 +138,7 @@ def upload_all():
 
 
 @uploadAll_bp.route('/deploy_website', methods=['POST'])
+@login_required
 def deploy_website():
     project_id = session.get('last_project_id')
     if not project_id:

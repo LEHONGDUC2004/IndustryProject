@@ -1,20 +1,21 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const deployForm = document.getElementById('deploy-form');
 
+document.addEventListener('DOMContentLoaded', function () {
   const optionCreate = document.getElementById('option_create');
   const optionExisting = document.getElementById('option_existing');
-
   const sqlGroup = document.getElementById('sql_file_group');
   const hostGroup = document.getElementById('host_db_group');
-
   const fileSql = document.getElementById('file_sql');
   const passwd = document.getElementById('passwd');
   const confirmPasswd = document.getElementById('confirm_passwd');
-  const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
 
-  // Ẩn/hiện trường theo lựa chọn CSDL
+  const loadingModal = document.getElementById('loadingModal');
+  const deployModal = document.getElementById('deployModal');
+  const deployForm = document.getElementById('deploy-form');
+  const newDeployBtn = document.getElementById('deploy-btn-login');
+  const modalEl = document.getElementById('loginRequiredModal1');
+  // Toggle radio group
   function toggleFields() {
-    if (optionCreate.checked) {
+    if (optionCreate && optionCreate.checked) {
       sqlGroup.style.display = 'block';
       hostGroup.style.display = 'none';
       fileSql.setAttribute('required', 'required');
@@ -24,38 +25,53 @@ document.addEventListener('DOMContentLoaded', function () {
       fileSql.removeAttribute('required');
     }
   }
-  optionCreate.addEventListener('change', toggleFields);
-  optionExisting.addEventListener('change', toggleFields);
-  toggleFields(); // chạy khi load
+  if (optionCreate && optionExisting) {
+    optionCreate.addEventListener('change', toggleFields);
+    optionExisting.addEventListener('change', toggleFields);
+    toggleFields();
+  }
 
-  // Xử lý submit form
-  deployForm.addEventListener('submit', function (e) {
-    // Nếu là kết nối CSDL có sẵn thì kiểm tra mật khẩu
-    if (optionExisting.checked) {
-      const pass1 = passwd.value.trim();
-      const pass2 = confirmPasswd.value.trim();
-      document.getElementById('host_db').value = ""; // reset
 
-      if (pass1.length < 6) {
-        e.preventDefault();
-        alert("Mật khẩu phải có ít nhất 6 ký tự.");
-        return false;
-      }
+  if (newDeployBtn && modalEl) {
+    const loginModal = new bootstrap.Modal(modalEl);
 
-      if (pass1 !== pass2) {
-        e.preventDefault();
-        alert("Mật khẩu và nhập lại mật khẩu không khớp.");
-        return false;
-      }
-    }
+    newDeployBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      loginModal.show();
+    });
+  }
 
-    // Hiện modal loading
-    loadingModal.show();
+
+  if (deployForm) {
+   const loadingModal1 = new bootstrap.Modal(loadingModal, {
+             backdrop: 'static',
+             keyboard: false
   });
+    deployForm.addEventListener('submit', function (e) {
+      loadingModal1.show();
+    });
+  }
 });
+
 window.onload = function () {
   setInterval(function () {
     const frame = document.getElementById("jenkins-frame");
-    frame.src = frame.src;
+    if (frame) frame.src = frame.src;
   }, 10000);
 };
+
+function changeTypePassword() {
+  let password = document.getElementById('passwd');
+  let eyeIcon = document.querySelector('.fa-regular');
+
+  if (password.type === 'text') {
+    password.type = 'password';
+    eyeIcon.classList.remove('fa-eye-slash');
+    eyeIcon.classList.add('fa-eye');
+  } else {
+    password.type = 'text';
+    eyeIcon.classList.remove('fa-eye');
+    eyeIcon.classList.add('fa-eye-slash');
+  }
+}
+

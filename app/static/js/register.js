@@ -26,5 +26,3 @@ function cofirmPassword() {
       eyeIcon.classList.add('fa-lock-open');
   }
 }
-
-;
