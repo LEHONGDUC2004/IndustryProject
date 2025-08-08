@@ -34,6 +34,10 @@ jobs:
           PORT: ${{ secrets.VM_PORT }}
         run: |
           scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
+      - name: Copy deploy_from_s3.sh & project_anisible to root
+        run: | 
+             cp home/ubuntu/IndustryProject/deploy_from_s3.sh ./deploy_from_s3.sh 
+             cp -r home/ubuntu/IndustryProject/project-ansible ./project-ansible
 
       - name: Deploy on EC2
         env:
@@ -43,27 +47,22 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
             # Cài Docker nếu chưa có
+            sudo apt update
             if ! command -v docker &>/dev/null; then
-              sudo apt-get update
               sudo apt-get install -y docker.io ansible sshpass
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
 
-            # Cài Docker Compose nếu chưa có
-            if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
-              sudo apt-get update
-              sudo apt-get install -y docker-compose-plugin || \
-              (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
-            fi
-
             # Thêm user vào nhóm docker
             sudo usermod -aG docker ubuntu
-             
-            sudo chmod -R 777 /home/ubuntu/uploaded_source_code
-            sudo chmod -R 777 /home/ubuntu/extracted_source_code
-            sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
-          
+
+            sudo chmod -R 755 /home/ubuntu/uploaded_source_code
+            sudo chmod -R 755 /home/ubuntu/extracted_source_code
+            sudo chmod -R 755 /home/ubuntu/replaced_compressed_source_code
+            
+            sudo chmod 755 /home/ubuntu/deploy_from_s3.sh
+
             # Ghi đúng định dạng sudoers để tránh hỏng sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
 
@@ -71,13 +70,10 @@ jobs:
             mkdir -p /home/ubuntu/IndustryProject
             tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
             rm /home/ubuntu/app.tar.gz
+            cd /home/ubuntu/project-ansible
+
+            ansible-playbook -i inventory.ini playbook.yml
+            
             cd /home/ubuntu/IndustryProject
-
-
-            # Chạy docker compose
-            if command -v docker-compose &>/dev/null; then
-              sudo docker-compose up -d --build
-            else
-              sudo docker compose up -d --build
-            fi
+            sudo docker-compose up -d --build
           "

@@ -15,6 +15,7 @@ from app.models import Project, Deployment
 from flask_login import current_user, login_required
 from app import db
 from app.controller.cryto_utils import encrypt_data
+from app.controller.upload_to_s3 import upload_to_s3
 
 import app.controller.counter as counter
 import os
@@ -131,9 +132,11 @@ def upload_all():
     shutil.make_archive(replaced_path.rsplit('.', 1)[0], 'zip',
                         root_dir=os.path.dirname(project_real_path),
                         base_dir=os.path.basename(project_real_path))
-
+    final_zip_path = replaced_path
+    s3_key = upload_to_s3(final_zip_path, zip_filename, current_user.id)
 
     trigger_jenkins_build(zip_filename)
+
     return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
 
 
