@@ -88,7 +88,6 @@ jobs:
 
             cd /home/ubuntu/IndustryProject
             sudo docker-compose up -d --build
-            aws --configure
           "
         
 
