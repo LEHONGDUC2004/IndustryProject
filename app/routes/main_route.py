@@ -38,7 +38,6 @@ def verify():
 @main_bp.route('/login')
 def login():
     return render_template('login.html')
-# Cơ sở dữ liệu triệu chứng và khoa khám bệnh
 
 @main_bp.route('/indexLogin')
 def index_login():
