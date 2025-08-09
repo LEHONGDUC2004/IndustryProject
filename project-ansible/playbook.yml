@@ -5,12 +5,13 @@
     - name: Cập nhật hệ thống
       apt:
         update_cache: yes
+
     - name: Cài đặt Docker
       apt:
         name: docker.io
         state: present
 
-    - name: Cài đặt Docker Compose
+    - name: Cài đặt Docker Compose (v1 binary)
       get_url:
         url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-linux-x86_64
         dest: /usr/local/bin/docker-compose
@@ -34,11 +35,16 @@
         name: ubuntu
         groups: docker
         append: yes
-    - name: Run hello-world container
-      command: docker run hello-world
-      register: result
-      ignore_errors: true
 
-    - name: Hiển thị kết quả hello-world
+    - name: Cài đặt unzip
+      apt:
+        name: unzip
+        state: present
+
+    - name: Kiểm tra unzip
+      command: unzip -v
+      register: unzip_ver
+
+    - name: Hiển thị phiên bản unzip
       debug:
-        var: result.stdout_lines
+        var: unzip_ver.stdout_lines
