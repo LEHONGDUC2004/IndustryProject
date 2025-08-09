@@ -59,6 +59,7 @@ jobs:
             fi
 
             # Thêm user vào nhóm docker
+          
             sudo usermod -aG docker ubuntu
             sudo mkdir /home/ubuntu/uploaded_source_code
             sudo mkdir /home/ubuntu/extracted_source_code
