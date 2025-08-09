@@ -83,11 +83,12 @@ jobs:
             sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
             cd /home/ubuntu/project-ansible
             ansible-playbook -i inventory.ini playbook.yml
+          
             cd
-            
 
             cd /home/ubuntu/IndustryProject
             sudo docker-compose up -d --build
+            aws --configure
           "
         
 
