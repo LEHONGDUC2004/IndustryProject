@@ -27,13 +27,13 @@ jobs:
               --ignore-failed-read \
               -czf app.tar.gz .
 
-#      - name: Copy code to EC2
-#        env:
-#          HOST: ${{ secrets.VM_HOST }}
-#          USER: ${{ secrets.VM_USER }}
-#          PORT: ${{ secrets.VM_PORT }}
-#        run: |
-#          scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
+      - name: Copy code to EC2
+        env:
+          HOST: ${{ secrets.VM_HOST }}
+          USER: ${{ secrets.VM_USER }}
+          PORT: ${{ secrets.VM_PORT }}
+        run: |
+          scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
 
       - name: Deploy on EC2
         env:
