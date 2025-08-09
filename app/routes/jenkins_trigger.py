@@ -5,11 +5,11 @@ upload_bp = Blueprint('upload', __name__)
 logger = logging.getLogger(__name__)
 
 # Jenkins config
-JENKINS_BASE_URL = 'http://3.212.74.20:8080'
+JENKINS_BASE_URL = 'http://34.238.48.211:8080/'
 JENKINS_JOB_URL = f"{JENKINS_BASE_URL}/job/build-web-static/buildWithParameters"
 JENKINS_VIEW_URL = f"{JENKINS_BASE_URL}/view/MyView"
 JENKINS_USER = 'lehongduc3491'
-JENKINS_API_TOKEN = '11e592530e49b4dde7bdf44ee65b6e9685'
+JENKINS_API_TOKEN = '1190c9794884b4fd7a5b110cbd41571209'
 
 session = requests.session()
 session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
@@ -18,16 +18,17 @@ session.headers.update({"User-Agent": "upload-service/1.0"})
 
 
 
-# Trigger build with ZIP_NAME param
-def trigger_jenkins_build(zip_filename):
+# Trigger build with ZIP_NAME + S3_KEY
+def trigger_jenkins_build(zip_filename, s3_key):
     payload = {
-        'ZIP_NAME': zip_filename
+        "ZIP_NAME": zip_filename,
+        "S3_KEY": s3_key
     }
-    response = requests.post(
-        JENKINS_JOB_URL,
-        auth=(JENKINS_USER, JENKINS_API_TOKEN),
-        params=payload
+    r = session.post(JENKINS_JOB_URL, params=payload, timeout=10)
+    logger.info(
+        "Trigger Jenkins: ZIP_NAME=%s S3_KEY=%s -> %s",
+        zip_filename, s3_key, r.status_code
     )
-    logger.info(f"Triggered Jenkins build with ZIP_NAME={zip_filename}, status={response.status_code}")
-    return response.status_code
+    return r.status_code
+
 
