@@ -133,7 +133,7 @@ def upload_all():
                         root_dir=os.path.dirname(project_real_path),
                         base_dir=os.path.basename(project_real_path))
     final_zip_path = replaced_path
-    upload_to_s3(final_zip_path, zip_filename, current_user, project.id )
+    upload_to_s3(final_zip_path, zip_filename, current_user.id, project.id)
 
     # trigger_jenkins_build(zip_filename)
 
