@@ -41,52 +41,52 @@ jobs:
           USER: ${{ secrets.VM_USER }}
           PORT: ${{ secrets.VM_PORT }}
         run: |
-            ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
-            # Cài Docker nếu chưa có
-            sudo apt update
-             if ! command -v docker &>/dev/null; then
-              sudo apt-get update
-              sudo apt-get install -y docker.io ansible sshpass
-              sudo systemctl enable docker
-              sudo systemctl start docker
-            fi
-
-            # Cài Docker Compose nếu chưa có
-            if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
-              sudo apt-get update
-              sudo apt-get install -y docker-compose-plugin || \
-              (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
-            fi
-
-            # Thêm user vào nhóm docker
+          ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
+          # Cài Docker nếu chưa có
+          sudo apt update
+           if ! command -v docker &>/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y docker.io ansible sshpass
+            sudo systemctl enable docker
+            sudo systemctl start docker
+          fi
           
-            sudo usermod -aG docker ubuntu
-            sudo mkdir /home/ubuntu/uploaded_source_code
-            sudo mkdir /home/ubuntu/extracted_source_code
-            sudo mkdir /home/ubuntu/replaced_compressed_source_code
+          # Cài Docker Compose nếu chưa có
+          if ! command -v docker-compose &>/dev/null && ! docker compose version &>/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y docker-compose-plugin || \
+            (sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose)
+          fi
           
-            sudo chmod -R 777 /home/ubuntu/uploaded_source_code
-            sudo chmod -R 777 /home/ubuntu/extracted_source_code
-            sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
-            
-
-
-            # Ghi đúng định dạng sudoers để tránh hỏng sudo
-            echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
-
-            # Tạo thư mục và giải nén mã nguồn
-            mkdir -p /home/ubuntu/IndustryProject
-            tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
-            rm /home/ubuntu/app.tar.gz
-            cp -r /home/ubuntu/IndustryProject/project-ansible /home/ubuntu/project-ansible
-            cp /home/ubuntu/IndustryProject/deploy_from_s3.sh /home/ubuntu/deploy_from_s3.sh
-            cd
-            sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
-            cd /home/ubuntu/project-ansible
-            ansible-playbook -i inventory.ini playbook.yml
-            cd
-            cd /home/ubuntu/IndustryProject
-            sudo docker-compose up -d --build
+          # Thêm user vào nhóm docker
+          
+          sudo usermod -aG docker ubuntu
+          sudo mkdir /home/ubuntu/uploaded_source_code
+          sudo mkdir /home/ubuntu/extracted_source_code
+          sudo mkdir /home/ubuntu/replaced_compressed_source_code
+          
+          sudo chmod -R 777 /home/ubuntu/uploaded_source_code
+          sudo chmod -R 777 /home/ubuntu/extracted_source_code
+          sudo chmod -R 777 /home/ubuntu/replaced_compressed_source_code
+          
+          
+          
+          # Ghi đúng định dạng sudoers để tránh hỏng sudo
+          echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
+          
+          # Tạo thư mục và giải nén mã nguồn
+          mkdir -p /home/ubuntu/IndustryProject
+          tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
+          rm /home/ubuntu/app.tar.gz
+          cp -r /home/ubuntu/IndustryProject/project-ansible /home/ubuntu/project-ansible
+          cp /home/ubuntu/IndustryProject/deploy_from_s3.sh /home/ubuntu/deploy_from_s3.sh
+          cd
+          sudo chmod 777 /home/ubuntu/deploy_from_s3.sh
+          cd /home/ubuntu/project-ansible
+          ansible-playbook -i inventory.ini playbook.yml
+          cd
+          cd /home/ubuntu/IndustryProject
+          sudo docker-compose up -d --build
           "
         
 
