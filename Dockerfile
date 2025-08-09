@@ -34,5 +34,4 @@ COPY --chown=appuser:appuser . .
 # Mở port 5000
 EXPOSE 80
 
-# Chạy ứng dụng
 CMD ["sh", "-c", "sleep 15 && python run.py"]
