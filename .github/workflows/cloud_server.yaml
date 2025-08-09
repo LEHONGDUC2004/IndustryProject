@@ -41,11 +41,12 @@ jobs:
           USER: ${{ secrets.VM_USER }}
           PORT: ${{ secrets.VM_PORT }}
         run: |
-          ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
+            ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "
             # Cài Docker nếu chưa có
-            sudo apt-get update
+            sudo apt update
              if ! command -v docker &>/dev/null; then
-              sudo apt-get install -y docker.io ansible sshpass awscli
+              sudo apt-get update
+              sudo apt-get install -y docker.io ansible sshpass
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
