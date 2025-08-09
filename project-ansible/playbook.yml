@@ -5,7 +5,6 @@
     - name: Cập nhật hệ thống
       apt:
         update_cache: yes
-
     - name: Cài đặt Docker
       apt:
         name: docker.io
