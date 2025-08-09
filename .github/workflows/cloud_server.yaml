@@ -35,7 +35,6 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
 
-
       - name: Deploy on EC2
         env:
           HOST: ${{ secrets.VM_HOST }}
@@ -47,7 +46,7 @@ jobs:
             sudo apt update
              if ! command -v docker &>/dev/null; then
               sudo apt-get update
-              sudo apt-get install -y docker.io ansible sshpass
+              sudo apt-get install -y docker.io ansible sshpass awscli -y
               sudo systemctl enable docker
               sudo systemctl start docker
             fi
@@ -85,6 +84,8 @@ jobs:
             cd /home/ubuntu/project-ansible
             ansible-playbook -i inventory.ini playbook.yml
             cd
+            
+
             cd /home/ubuntu/IndustryProject
             sudo docker-compose up -d --build
           "
