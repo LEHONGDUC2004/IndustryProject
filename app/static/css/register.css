@@ -171,11 +171,12 @@ font-size: 3rem;
 }
 
 .img-container {
-  background: var(--secondary);
+  margin-top:2rem;
   border-radius: 3rem;
 }
 
 .img-container img {
+  margin-top:18.8rem;
   width: 100%;
   border-radius: 2rem;
 }

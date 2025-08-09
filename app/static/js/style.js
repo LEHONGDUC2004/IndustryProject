@@ -14,6 +14,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const newDeployBtn = document.getElementById('deploy-btn-login');
   const modalEl = document.getElementById('loginRequiredModal1');
   // Toggle radio group
+    const passwdInput = document.getElementById('passwd');
+    const toggleBtn = document.getElementById('toggle-passwd');
+    const icon = toggleBtn.querySelector('i');
+
+  toggleBtn.addEventListener('click', () => {
+      const show = passwdInput.type === 'password';   // đang ẩn → chuẩn bị hiện
+      passwdInput.type = show ? 'text' : 'password';
+      icon.classList.toggle('fa-eye', show);
+      icon.classList.toggle('fa-eye-slash', !show);
+      toggleBtn.setAttribute('aria-pressed', show ? 'true' : 'false');
+  });
+
   function toggleFields() {
     if (optionCreate && optionCreate.checked) {
       sqlGroup.style.display = 'block';
@@ -60,18 +72,8 @@ window.onload = function () {
   }, 10000);
 };
 
-function changeTypePassword() {
-  let password = document.getElementById('passwd');
-  let eyeIcon = document.querySelector('.fa-regular');
 
-  if (password.type === 'text') {
-    password.type = 'password';
-    eyeIcon.classList.remove('fa-eye-slash');
-    eyeIcon.classList.add('fa-eye');
-  } else {
-    password.type = 'text';
-    eyeIcon.classList.remove('fa-eye');
-    eyeIcon.classList.add('fa-eye-slash');
-  }
-}
+
+
+
 

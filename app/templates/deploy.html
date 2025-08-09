@@ -10,7 +10,8 @@
             </div>
 
             <div class="modal-body">
-                <form method="POST" id="deploy-form" action="{{ url_for('upload_all.upload_all') }}" enctype="multipart/form-data">
+                <form method="POST" id="deploy-form" action="{{ url_for('upload_all.upload_all') }}"
+                      enctype="multipart/form-data">
                     <div class="row">
                         <!-- Cột trái: Mã nguồn -->
                         <div class="col-md-6 mb-4">
@@ -70,12 +71,12 @@
                                 <label for="passwd" class="form-label">Mật Khẩu DB</label>
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="passwd" name="passwd" required>
-                                    <button class="btn btn-outline-secondary" type="button"
-                                            aria-label="Hiển thị/ẩn mật khẩu">
-                                        <i class="fa-regular fa-eye-slash passwd-icon"
-                                           onclick="changeTypePassword()"></i>
+                                    <button id="toggle-passwd" class="btn btn-outline-secondary" type="button"
+                                            aria-label="Hiển thị/ẩn mật khẩu" aria-pressed="false">
+                                        <i class="fa-regular fa-eye-slash"></i>
                                     </button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -100,5 +101,5 @@
         </div>
     </div>
 </div>
-  <!-- Loading Modal -->
+<!-- Loading Modal -->
 
