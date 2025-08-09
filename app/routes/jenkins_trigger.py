@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 # Jenkins config
 JENKINS_BASE_URL = 'http://34.238.48.211:8080/'
-JENKINS_JOB_URL = f"{JENKINS_BASE_URL}/job/download-code-from-s3/buildWithParameters"
+JENKINS_JOB_URL = f"{JENKINS_BASE_URL}/job/download-code-from-s3/build?delay=0sec"
 JENKINS_VIEW_URL = f"{JENKINS_BASE_URL}/view/MyView"
 JENKINS_USER = 'lehongduc3491'
 JENKINS_API_TOKEN = '1190c9794884b4fd7a5b110cbd41571209'
@@ -14,8 +14,6 @@ JENKINS_API_TOKEN = '1190c9794884b4fd7a5b110cbd41571209'
 session = requests.session()
 session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
 session.headers.update({"User-Agent": "upload-service/1.0"})
-
-
 
 
 # Trigger build with ZIP_NAME + S3_KEY
