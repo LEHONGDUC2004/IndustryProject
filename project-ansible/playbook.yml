@@ -35,7 +35,6 @@
         name: ubuntu
         groups: docker
         append: yes
-
     - name: Run hello-world container
       command: docker run hello-world
       register: result
