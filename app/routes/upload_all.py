@@ -133,9 +133,9 @@ def upload_all():
                         root_dir=os.path.dirname(project_real_path),
                         base_dir=os.path.basename(project_real_path))
     final_zip_path = replaced_path
-    s3_key = upload_to_s3(final_zip_path, zip_filename, current_user.id)
+    upload_to_s3(final_zip_path, zip_filename, current_user.id)
 
-    trigger_jenkins_build(zip_filename)
+    # trigger_jenkins_build(zip_filename)
 
     return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
 
