@@ -62,12 +62,16 @@ def jenkins_webhook():
 
     data = request.get_json(silent=True) or {}
     dep_id      = data.get("deploy_id") or data.get("DEPLOY_ID")
-    status_raw  = (data.get("status") or "").upper()      # <— sửa ở đây
+    status_raw  = (data.get("status") or "").upper()
     duration_ms = data.get("duration_ms") or 0
+    job         = data.get("job")
+    build_no    = data.get("build_number")
+    build_url   = data.get("build_url")
 
     if dep_id:
         dep = Deployment.query.get(dep_id)
         if dep:
+            # cập nhật trạng thái + thời gian
             if status_raw == "SUCCESS":
                 dep.status = "success"
             elif status_raw == "FAILURE":
@@ -77,12 +81,18 @@ def jenkins_webhook():
             except Exception:
                 pass
 
+            # append 1 dòng log ngắn
+            summary = f"[{job}] #{build_no} {status_raw} {build_url or ''}".strip()
+            dep.logs = (dep.logs or "")
+            if summary and (not dep.logs or summary not in dep.logs):
+                dep.logs += ("" if not dep.logs else "\n") + summary
+
             db.session.add(dep)
-            wl = WebhookLog(project_id=dep.project_id, payload=str(data))
-            db.session.add(wl)
+            db.session.add(WebhookLog(project_id=dep.project_id, payload=str(data)))
             db.session.commit()
 
     return jsonify({"ok": True})
+
 
 @main_bp.get("/api/my_deployments")
 @login_required
