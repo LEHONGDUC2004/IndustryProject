@@ -51,7 +51,7 @@ class Deployment(db.Model):
     build_time = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Lưu log của các webhook (auto deploy từ GitHub)
+# Lưu log của các webhook
 class WebhookLog(db.Model):
     __tablename__ = 'webhook_log'
 
@@ -60,7 +60,7 @@ class WebhookLog(db.Model):
     payload = db.Column(db.Text)
     received_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Domain custom (người dùng gắn tên miền riêng)
+# Domain custom
 class Domain(db.Model):
     __tablename__ = 'domain'
 

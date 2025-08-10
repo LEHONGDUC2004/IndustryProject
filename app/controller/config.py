@@ -1,0 +1,4 @@
+import os
+JENKINS_BASE_URL = os.getenv("JENKINS_BASE_URL")
+JENKINS_USER = os.getenv("JENKINS_USER")
+JENKINS_API_TOKEN = os.getenv("JENKINS_API_TOKEN")

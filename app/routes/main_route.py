@@ -52,3 +52,8 @@ def logout_process():
 @main_bp.route('/passwd')
 def setting_passwd():
     return render_template('setting/passwd.html',name_user=current_user.name_account)
+
+@main_bp.post("/webhooks/jenkins")
+def jenkins_webhook():
+    print("got:", request.json)
+    return {"ok": True}

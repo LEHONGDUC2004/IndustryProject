@@ -1,20 +1,22 @@
 from flask import Blueprint, render_template
 import requests, logging
-
+from urllib.parse import urljoin
+from app.controller.config import JENKINS_BASE_URL, JENKINS_USER, JENKINS_API_TOKEN
 upload_bp = Blueprint('upload', __name__)
 logger = logging.getLogger(__name__)
 
-# Jenkins config
-JENKINS_BASE_URL = 'http://34.238.48.211/'
-JENKINS_JOB_URL = f"{JENKINS_BASE_URL}/job/download-code-from-s3/buildWithParameters"
-JENKINS_VIEW_URL = f"{JENKINS_BASE_URL}/view/MyView"
-JENKINS_USER = 'lehongduc3491'
-JENKINS_API_TOKEN = '1190c9794884b4fd7a5b110cbd41571209'
 
 session = requests.session()
 session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
-session.headers.update({"User-Agent": "upload-service/1.0"})
+session.headers.update({"User-Agent": "upload-service/1.0", "Accept": "application/json"})
 
+def get_crumb():
+    # /crumbIssuer/api/json trả về {"crumbRequestField":"Jenkins-Crumb","crumb":"..."}
+    url = urljoin(JENKINS_BASE_URL + "/", "crumbIssuer/api/json")
+    r = session.get(url, timeout=10)
+    r.raise_for_status()
+    data = r.json()
+    return {data["crumbRequestField"]: data["crumb"]}
 
 # Trigger build with ZIP_NAME + S3_KEY
 def trigger_jenkins_build(zip_filename, s3_key):
