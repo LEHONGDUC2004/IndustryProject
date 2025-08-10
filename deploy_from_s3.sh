@@ -17,7 +17,6 @@ aws s3 cp s3://your-bucket/$S3_KEY /home/ubuntu/$PROJECT_NAME.zip
 # Giải nén
 unzip /home/ubuntu/$PROJECT_NAME.zip -d /home/ubuntu/$PROJECT_NAME
 
-# Build & run Docker (nếu là app Python/Django/Flask...)
 cd /home/ubuntu/$PROJECT_NAME
 
 # Nếu có Dockerfile
