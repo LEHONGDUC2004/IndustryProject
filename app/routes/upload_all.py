@@ -9,7 +9,7 @@ from app.controller.replace_db_uri import replace_or_add_sqlalchemy_uri
 from app.controller.replacename_db import replace_database_name
 from app.controller.find_init_file import find_flask_app_file
 from app.controller.test_requirements import ensure_requirements_at_root
-from app.routes.jenkins_trigger import trigger_jenkins_build
+from app.routes.jenkins_trigger import trigger_via_generic
 from app.controller.test_host_port import find_port_host
 from app.models import Project, Deployment
 from flask_login import current_user, login_required
@@ -137,7 +137,17 @@ def upload_all():
     final_zip_path = replaced_path
     # upload source code lên s3
     s3_key = upload_to_s3(final_zip_path, zip_filename, current_user.id, project.id)
-    trigger_jenkins_build(zip_filename, s3_key)
+
+    deployment = Deployment(
+        project_id=project.id,
+        zip_filename=zip_filename,
+        status="pending"
+    )
+    db.session.add(deployment)
+    db.session.commit()
+    dep_id = deployment.id
+    session['last_deploy_id'] = dep_id
+    trigger_via_generic(zip_filename, s3_key, dep_id)
     cleanup_temp_files(
         project_name=project_name,
         zip_filename=zip_filename,
@@ -148,26 +158,26 @@ def upload_all():
     return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
 
 
-@uploadAll_bp.route('/deploy_website', methods=['POST'])
-@login_required
-def deploy_website():
-    project_id = session.get('last_project_id')
-    if not project_id:
-        # Không tìm thấy project_id trong session
-        return "No project to deploy.", 400
-
-    project = Project.query.get(project_id)
-    if not project:
-        # Không tìm thấy project trong DB
-        return "Project not found.", 404
-
-    deployment = Deployment(
-        project_id=project.id,
-        zip_filename=project.name + ".zip",
-        status="pending",
-        logs="NO",
-        build_time="10s"
-    )
-    db.session.add(deployment)
-    db.session.commit()
-    return redirect(url_for('main.success'))
+# @uploadAll_bp.route('/deploy_website', methods=['POST'])
+# @login_required
+# def deploy_website():
+#     project_id = session.get('last_project_id')
+#     if not project_id:
+#         # Không tìm thấy project_id trong session
+#         return "No project to deploy.", 400
+#
+#     project = Project.query.get(project_id)
+#     if not project:
+#         # Không tìm thấy project trong DB
+#         return "Project not found.", 404
+#
+#     deployment = Deployment(
+#         project_id=project.id,
+#         zip_filename=project.name + ".zip",
+#         status="pending",
+#         logs="NO",
+#         build_time="10s"
+#     )
+#     db.session.add(deployment)
+#     db.session.commit()
+#     return redirect(url_for('main.success'))

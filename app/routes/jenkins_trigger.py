@@ -1,37 +1,28 @@
-from flask import Blueprint, render_template
-import requests, logging
-from app.controller.config import JENKINS_BASE_URL, JENKINS_USER, JENKINS_API_TOKEN
-upload_bp = Blueprint('upload', __name__)
+# app/services/jenkins_client.py
+import os
+import logging
+from urllib.parse import urljoin
+
+import requests
+from app.controller.config import JENKINS_BASE_URL
+
 logger = logging.getLogger(__name__)
 
+BASE = JENKINS_BASE_URL.rstrip('/')
+GENERIC_TOKEN = os.getenv("JENKINS_GENERIC_TOKEN", "MYTOKEN")
 
-
-session = requests.session()
-session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
+session = requests.Session()
 session.headers.update({"User-Agent": "upload-service/1.0", "Accept": "application/json"})
-JENKINS_JOB_URL = f"{JENKINS_BASE_URL}/job/download-code-from-s3/buildWithParameters"
-JENKINS_VIEW_URL = f"{JENKINS_BASE_URL}/view/MyView"
-session = requests.session()
-session.auth = (JENKINS_USER, JENKINS_API_TOKEN)
-session.headers.update({"User-Agent": "upload-service/1.0"})
 
+def trigger_via_generic(zip_name: str, s3_key: str, deploy_id: int, token: str = GENERIC_TOKEN):
 
-# Trigger build with ZIP_NAME + S3_KEY
-def trigger_jenkins_build(zip_filename, s3_key):
-    payload = {
-        "ZIP_NAME": zip_filename,
-        "S3_KEY": s3_key
-    }
-    r = session.post(JENKINS_JOB_URL, params=payload, timeout=10)
-    logger.info(
-        "Trigger Jenkins: ZIP_NAME=%s S3_KEY=%s -> %s",
-        zip_filename, s3_key, r.status_code
-    )
-    return r.status_code
+    url = urljoin(BASE + "/", "generic-webhook-trigger/invoke")
+    payload = {"ZIP_NAME": zip_name, "S3_KEY": s3_key, "DEPLOY_ID": deploy_id}
 
-
-
-
-
-
-
+    try:
+        r = session.post(url, params={"token": token}, json=payload, timeout=10)
+        logger.info("Trigger Jenkins via Generic: %s -> %s %s", url, r.status_code, r.text[:120])
+        return {"ok": r.ok, "status": r.status_code, "body": r.text}
+    except requests.RequestException as e:
+        logger.exception("Trigger Jenkins failed")
+        return {"ok": False, "status": 0, "error": str(e)}
