@@ -1,8 +1,6 @@
-# app/services/jenkins_client.py
 import os
 import logging
 from urllib.parse import urljoin
-
 import requests
 from app.controller.config import JENKINS_BASE_URL
 

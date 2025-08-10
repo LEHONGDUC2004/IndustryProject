@@ -148,6 +148,7 @@ def upload_all():
     dep_id = deployment.id
     session['last_deploy_id'] = dep_id
     trigger_via_generic(zip_filename, s3_key, dep_id)
+
     cleanup_temp_files(
         project_name=project_name,
         zip_filename=zip_filename,
@@ -155,7 +156,7 @@ def upload_all():
         extract_dir=EXTRACT_DIR,
         replaced_dir=REPLACED_DIR
     )
-    return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
+    return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER']))
 
 
 
