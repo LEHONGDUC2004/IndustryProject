@@ -1,7 +1,9 @@
-from flask import Blueprint, render_template,redirect,request,url_for,flash,session
-from app import login_manager
-from flask_login import login_required,logout_user,current_user
-
+import os
+from flask import Blueprint, render_template, redirect, request, url_for, flash, session, jsonify
+from flask_login import login_required, logout_user, current_user
+from app import login_manager, db
+from app.models import Deployment, WebhookLog
+from app.controller.config import WEBHOOK_SECRET
 main_bp = Blueprint('main', __name__)
 
 login_manager.login_view = 'main.login'
@@ -53,7 +55,35 @@ def logout_process():
 def setting_passwd():
     return render_template('setting/passwd.html',name_user=current_user.name_account)
 
-@main_bp.post("/webhooks/jenkins")
+
+
+@main_bp.route("/webhooks/jenkins", methods=["POST"])
 def jenkins_webhook():
-    print("got:", request.json)
-    return {"ok": True}
+    if WEBHOOK_SECRET and request.headers.get("X-Webhook-Secret") != WEBHOOK_SECRET:
+        return jsonify({"ok": False, "error": "forbidden"}), 403
+
+    data = request.get_json(silent=True) or {}
+    dep_id = data.get("deploy_id")
+    status = (data.get("status") or "").upper()
+    duration_ms = data.get("duration_ms") or 0
+
+    if dep_id:
+        dep = Deployment.query.get(dep_id)
+        if dep:
+            dep.status = "success" if status == "SUCCESS" else "failed"
+            dep.build_time = float(duration_ms) / 1000.0
+            db.session.add(dep)
+
+            wl = WebhookLog(project_id=dep.project_id, payload=str(data))
+            db.session.add(wl)
+            db.session.commit()
+
+
+    # dep.logs = get_full_log(data["job"], data["build_number"]); db.session.commit()
+
+    return jsonify({"ok": True})
+
+# Cho phép GET để health-check nhanh trên trình duyệt
+@main_bp.route("/webhooks/jenkins", methods=["GET"])
+def jenkins_webhook_health():
+    return "Webhook OK. Use POST here.", 200
