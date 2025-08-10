@@ -10,7 +10,8 @@
             </div>
 
             <div class="modal-body p-4">
-                <form method="POST" id="deploy-form" action="#" enctype="multipart/form-data">
+                  <form method="POST" id="deploy-form" action="{{ url_for('upload_all.upload_all') }}"
+                      enctype="multipart/form-data">
                     <div class="row">
                         <!-- Cột trái: Mã nguồn -->
                         <div class="col-md-6 mb-4">
@@ -20,12 +21,15 @@
                             <div class="mb-3">
                                 <label class="form-label">Phương thức cung cấp:</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="source_type" id="source_type_zip" value="zip" checked>
+                                    <input class="form-check-input" type="radio" name="source_type" id="source_type_zip"
+                                           value="zip" checked>
                                     <label class="form-check-label" for="source_type_zip">Tải lên tệp .ZIP</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="source_type" id="source_type_github" value="github">
-                                    <label class="form-check-label" for="source_type_github">Sử dụng liên kết GitHub</label>
+                                    <input class="form-check-input" type="radio" name="source_type"
+                                           id="source_type_github" value="github">
+                                    <label class="form-check-label" for="source_type_github">Sử dụng liên kết
+                                        GitHub</label>
                                 </div>
                             </div>
 
@@ -33,7 +37,8 @@
                             <div id="zip_file_group">
                                 <div class="mb-3">
                                     <label for="file_zip" class="form-label">Tệp Mã Nguồn (.ZIP)</label>
-                                    <input type="file" class="form-control" id="file_zip" name="file_zip" accept=".zip" required>
+                                    <input type="file" class="form-control" id="file_zip" name="file_zip" accept=".zip"
+                                           required>
                                 </div>
                             </div>
 
@@ -41,11 +46,13 @@
                             <div id="github_link_group" style="display: none;">
                                 <div class="mb-3">
                                     <label for="github_url" class="form-label">Liên kết kho chứa GitHub</label>
-                                    <input type="url" class="form-control" id="github_url" name="github_url" placeholder="https://github.com/owner/repo">
+                                    <input type="url" class="form-control" id="github_url" name="github_url"
+                                           placeholder="https://github.com/owner/repo">
                                 </div>
                                 <div class="mb-3">
                                     <label for="github_ref" class="form-label">Nhánh, Tag hoặc Commit (Tùy chọn)</label>
-                                    <input type="text" class="form-control" id="github_ref" name="github_ref" placeholder="Mặc Định Là Main" value="main">
+                                    <input type="text" class="form-control" id="github_ref" name="github_ref"
+                                           placeholder="Mặc Định Là Main" value="main">
                                 </div>
                             </div>
                         </div>
@@ -56,12 +63,16 @@
                             <div class="mb-3">
                                 <label class="form-label">Kiểu Kết Nối CSDL:</label>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="db_option" id="option_existing" value="existing" checked>
-                                    <label class="form-check-label" for="option_existing">Kết nối với CSDL có sẵn</label>
+                                    <input class="form-check-input" type="radio" name="db_option" id="option_existing"
+                                           value="existing" checked>
+                                    <label class="form-check-label" for="option_existing">Kết nối với CSDL có
+                                        sẵn</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="db_option" id="option_create" value="create">
-                                    <label class="form-check-label" for="option_create">Tạo CSDL mới từ file .SQL</label>
+                                    <input class="form-check-input" type="radio" name="db_option" id="option_create"
+                                           value="create">
+                                    <label class="form-check-label" for="option_create">Tạo CSDL mới từ file
+                                        .SQL</label>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +101,8 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="name_database" class="form-label">Tên Cơ Sở Dữ Liệu</label>
-                                <input type="text" class="form-control" id="name_database" name="name_database" required>
+                                <input type="text" class="form-control" id="name_database" name="name_database"
+                                       required>
                             </div>
                             <div class="mb-3" id="passwd_group">
                                 <label for="passwd" class="form-label">Mật Khẩu DB</label>
@@ -105,10 +117,21 @@
                     </div>
 
                     <div class="modal-footer border-0 mt-4 p-0">
-                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-rocket me-2"></i> Tải Lên và Triển Khai
                         </button>
+                    </div>
+                    <!-- Loading Modal (optional) -->
+                    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content bg-dark text-white text-center p-5">
+                                <div class="spinner-border text-light" role="status">
+                                    <span class="visually-hidden">Đang tải...</span>
+                                </div>
+                                <p class="mt-3 mb-0">Đang triển khai, vui lòng đợi...</p>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -116,14 +139,3 @@
     </div>
 </div>
 
-<!-- Loading Modal (optional) -->
-<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white text-center p-5">
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Đang tải...</span>
-            </div>
-            <p class="mt-3 mb-0">Đang triển khai, vui lòng đợi...</p>
-        </div>
-    </div>
-</div>
