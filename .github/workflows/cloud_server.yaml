@@ -35,6 +35,8 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
 
+      - name: Bật Bảo Trì
+        run: ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "sudo maintenance on"
       - name: Deploy on EC2
         env:
           HOST: ${{ secrets.VM_HOST }}
@@ -87,5 +89,6 @@ jobs:
           cd /home/ubuntu/IndustryProject
           sudo docker-compose up -d --build
           "
-        
+      - name: Tắt Bảo Trì
+        run: ssh -o StrictHostKeyChecking=no -p $PORT $USER@$HOST "sudo maintenance off"
 
