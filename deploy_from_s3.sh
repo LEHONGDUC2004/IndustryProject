@@ -29,5 +29,4 @@ if [ -f Dockerfile ]; then
 else
   echo " No Dockerfile found. Skipping docker build."
 fi
-
 echo "" Deploy completed for $PROJECT_NAME"
