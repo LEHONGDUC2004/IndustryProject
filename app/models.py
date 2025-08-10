@@ -47,6 +47,7 @@ class Deployment(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
     zip_filename = db.Column(db.String(255))
     status = db.Column(db.String(50), default='pending')
+    logs = db.Column(db.Text)
     build_time = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
