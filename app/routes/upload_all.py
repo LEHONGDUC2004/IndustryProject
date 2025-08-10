@@ -158,26 +158,4 @@ def upload_all():
     return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER'], passwd=db_info['DB_PASSWORD']))
 
 
-# @uploadAll_bp.route('/deploy_website', methods=['POST'])
-# @login_required
-# def deploy_website():
-#     project_id = session.get('last_project_id')
-#     if not project_id:
-#         # Không tìm thấy project_id trong session
-#         return "No project to deploy.", 400
-#
-#     project = Project.query.get(project_id)
-#     if not project:
-#         # Không tìm thấy project trong DB
-#         return "Project not found.", 404
-#
-#     deployment = Deployment(
-#         project_id=project.id,
-#         zip_filename=project.name + ".zip",
-#         status="pending",
-#         logs="NO",
-#         build_time="10s"
-#     )
-#     db.session.add(deployment)
-#     db.session.commit()
-#     return redirect(url_for('main.success'))
+
