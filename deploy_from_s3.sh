@@ -27,6 +27,6 @@ if [ -f Dockerfile ]; then
   docker rm $PROJECT_NAME || true
   docker run -d --name $PROJECT_NAME -p 80:80 $PROJECT_NAME
 else
-  echo " No Dockerfile found. Skipping docker build."
+  echo " No Dockerfile found. Skipping docker build"
 fi
 echo "" Deploy completed for $PROJECT_NAME"
