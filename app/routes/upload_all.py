@@ -65,7 +65,7 @@ def upload_all():
         import_sql_to_mysql(sql_path, db_info)
 
     if github_url:
-        zip_path, zip_filename = download_public_zip(github_url, github_ref, UPLOAD_DIR)
+        zip_path, zip_filename = download_public_zip(github_url, UPLOAD_DIR, ref=github_ref)
     else:
         # 3. Handle ZIP file
         zip_file = request.files.get('file_zip')

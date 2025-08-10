@@ -4,67 +4,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const sqlGroup = document.getElementById('sql_file_group');
   const hostGroup = document.getElementById('host_db_group');
   const fileSql = document.getElementById('file_sql');
+  const sourceZipRadio = document.getElementById('source_type_zip');
+  const sourceGithubRadio = document.getElementById('source_type_github');
+  const zipGroup = document.getElementById('zip_file_group');
+  const githubGroup = document.getElementById('github_link_group');
+  const zipInput = document.getElementById('file_zip');
+  const githubUrlInput = document.getElementById('github_url');
 
 
- const sourceZipRadio = document.getElementById('source_type_zip');
-        const sourceGithubRadio = document.getElementById('source_type_github');
-        const zipGroup = document.getElementById('zip_file_group');
-        const githubGroup = document.getElementById('github_link_group');
-        const zipInput = document.getElementById('file_zip');
-        const githubUrlInput = document.getElementById('github_url');
-
-        const dbExistingRadio = document.getElementById('option_existing');
-        const dbCreateRadio = document.getElementById('option_create');
-        const sqlFileGroup = document.getElementById('sql_file_group');
-        const sqlFileInput = document.getElementById('file_sql');
-
-        const togglePasswordBtn = document.getElementById('toggle-passwd');
-        const passwordInput = document.getElementById('passwd');
-
-        // --- FUNCTIONS ---
-        function handleSourceChange() {
-            if (sourceGithubRadio.checked) {
-                githubGroup.style.display = 'block';
-                zipGroup.style.display = 'none';
-                githubUrlInput.required = true;
-                zipInput.required = false;
-            } else { // ZIP is selected
-                githubGroup.style.display = 'none';
-                zipGroup.style.display = 'block';
-                githubUrlInput.required = false;
-                zipInput.required = true;
-            }
-        }
-
-        function handleDbOptionChange() {
-            if (dbCreateRadio.checked) {
-                sqlFileGroup.style.display = 'block';
-                sqlFileInput.required = true;
-            } else { // Existing DB is selected
-                sqlFileGroup.style.display = 'none';
-                sqlFileInput.required = false;
-            }
-        }
-
-        function togglePasswordVisibility() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            // Toggle icon
-            const icon = togglePasswordBtn.querySelector('i');
-            icon.classList.toggle('fa-eye');
-            icon.classList.toggle('fa-eye-slash');
-        }
-
-        // --- EVENT LISTENERS ---
-        sourceZipRadio.addEventListener('change', handleSourceChange);
-        sourceGithubRadio.addEventListener('change', handleSourceChange);
-
-        dbExistingRadio.addEventListener('change', handleDbOptionChange);
-        dbCreateRadio.addEventListener('change', handleDbOptionChange);
-
-        if (togglePasswordBtn) {
-            togglePasswordBtn.addEventListener('click', togglePasswordVisibility);
-        }
   function toggleFields() {
     if (!optionCreate || !optionExisting || !sqlGroup || !hostGroup) return;
     const create = optionCreate.checked;
@@ -119,7 +66,29 @@ document.addEventListener('DOMContentLoaded', function () {
       toggleBtn.setAttribute('aria-pressed', show ? 'true' : 'false');
     });
   }
-  // auto refresh iframe Jenkins mỗi 10s
+
+
+
+
+        function handleSourceChange() {
+            if (sourceGithubRadio.checked) {
+                githubGroup.style.display = 'block';
+                zipGroup.style.display = 'none';
+                githubUrlInput.required = true;
+                zipInput.required = false;
+            } else { // ZIP is selected
+                githubGroup.style.display = 'none';
+                zipGroup.style.display = 'block';
+                githubUrlInput.required = false;
+                zipInput.required = true;
+            }
+        }
+        sourceZipRadio.addEventListener('change', handleSourceChange);
+        sourceGithubRadio.addEventListener('change', handleSourceChange);
+
+        dbExistingRadio.addEventListener('change', handleDbOptionChange);
+        dbCreateRadio.addEventListener('change', handleDbOptionChange);
+
   setInterval(function () {
     const frame = document.getElementById('jenkins-frame');
     if (frame) frame.src = frame.src;

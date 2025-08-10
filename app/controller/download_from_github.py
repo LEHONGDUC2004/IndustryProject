@@ -11,7 +11,7 @@ def _parse(url: str):
     ref_in_url = parts[3] if len(parts) >= 4 and parts[2] in ("tree","tag","releases","commit") else None
     return owner, repo, ref_in_url
 
-def download_public_zip(github_url, dest_dir, ref, max_mb: int = 200):
+def download_public_zip(github_url: str, dest_dir: str, ref: str | None = None, max_mb: int = 200):
     owner, repo, ref_in_url = _parse(github_url)
     chosen = (ref or ref_in_url or "main").strip()
     os.makedirs(dest_dir, exist_ok=True)
