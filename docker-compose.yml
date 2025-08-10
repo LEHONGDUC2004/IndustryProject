@@ -6,17 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: flask_app
-    ports:
-      - "80:80"
-    volumes:
-      - ./:/app
-#      - /home/lehongduc3491/uploaded_source_code:/data/uploaded
-#      - /home/lehongduc3491/extracted_source_code:/data/extracted
-#      - /home/lehongduc3491/replaced_compressed_source_code:/data/replaced
-      - /home/ubuntu/uploaded_source_code:/data/uploaded
-      - /home/ubuntu/extracted_source_code:/data/extracted
-      - /home/ubuntu/replaced_compressed_source_code:/data/replaced
-
+    # app không publish thẳng ra host nữa, chỉ expose cho Nginx
+    expose:
+      - "80"
     environment:
       - FLASK_ENV=development
       - UPLOAD_DIR=/data/uploaded
@@ -26,8 +18,30 @@ services:
       - DB_USER=root
       - DB_PASSWORD=123456
       - DB_NAME=upload_app
+    volumes:
+      - ./:/app
+      - /home/ubuntu/uploaded_source_code:/data/uploaded
+      - /home/ubuntu/extracted_source_code:/data/extracted
+      - /home/ubuntu/replaced_compressed_source_code:/data/replaced
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+      - /home/ubuntu/maintenance:/etc/nginx/maintenance
 
   db:
     image: mysql:8.0
