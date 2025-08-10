@@ -60,23 +60,41 @@
             background-color: #0056b3;
         }
 
-        /* Tùy chỉnh select dropdown */
-        select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a0aec0'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.5em 1.5em;
+            body {
+            background-color: #1C2025; /* Dark blue-charcoal background */
         }
-        .color_dns{
-            color: blue;
-
+        .modal-content {
+            --tw-bg-opacity: 1;
+             background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
         }
-        .color_dns:hover{
-           color: red;
+        .form-control, .form-select {
+            background-color: #3C444C; /* Input field background */
+            border-color: #5A6678;   /* Input border */
+            color: #E2E8F0;          /* Light text color for inputs */
         }
-        .passwd-icon {
-          color: white;
+        .form-control:focus, .form-select:focus {
+            background-color: #3C444C;
+            border-color: #3B82F6;   /* Blue accent on focus */
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+            color: #E2E8F0;
+        }
+        .form-control::placeholder {
+            color: #94A3B8;
+        }
+        .modal-header, .modal-footer {
+            border-color: #4A5568;
+        }
+        .text-info {
+            color: #60A5FA !important; /* Brighter blue for titles */
+        }
+        .btn-primary {
+            background-color: #3B82F6;
+            border-color: #3B82F6;
+        }
+        .btn-primary:hover {
+            background-color: #2563EB;
+            border-color: #1D4ED8;
+        }
+        .btn-close {
+            filter: invert(90%) sepia(10%) saturate(150%) hue-rotate(180deg) brightness(100%) contrast(90%);
         }

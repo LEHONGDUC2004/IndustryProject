@@ -17,6 +17,7 @@ from app import db
 from app.controller.cryto_utils import encrypt_data
 from app.controller.upload_to_s3 import upload_to_s3
 from app.controller.cleanup_temp_files import cleanup_temp_files
+from app.controller.download_from_github import download_public_zip
 
 
 import app.controller.counter as counter
@@ -46,7 +47,8 @@ def upload_all():
         'DB_PASSWORD': request.form.get('passwd')
     }
     # session['db_info'] = db_info
-
+    github_url = request.form.get("github_url", "").strip()
+    github_ref = request.form.get("github_ref", "").strip() or None
     # 2. Save .sql file if exists
     sql_file = request.files.get('file_sql')
     sql_filename = None
@@ -62,16 +64,17 @@ def upload_all():
 
         import_sql_to_mysql(sql_path, db_info)
 
-    # 3. Handle ZIP file
-    zip_file = request.files.get('file_zip')
-    if not zip_file or not allowed_file(zip_file.filename):
-        return 'Invalid ZIP file.', 400
+    if github_url:
+        zip_path, zip_filename = download_public_zip(github_url, github_ref, UPLOAD_DIR)
+    else:
+        # 3. Handle ZIP file
+        zip_file = request.files.get('file_zip')
+        if not zip_file or not allowed_file(zip_file.filename):
+            return 'Invalid ZIP file.', 400
 
-    zip_filename = secure_filename(zip_file.filename)
-    zip_path = os.path.join(UPLOAD_DIR, zip_filename)
-    zip_file.save(zip_path)
-    # Count file zip
-
+        zip_filename = secure_filename(zip_file.filename)
+        zip_path = os.path.join(UPLOAD_DIR, zip_filename)
+        zip_file.save(zip_path)
 
 
     # Extract project
