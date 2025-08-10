@@ -16,7 +16,6 @@ services:
       - /home/ubuntu/uploaded_source_code:/data/uploaded
       - /home/ubuntu/extracted_source_code:/data/extracted
       - /home/ubuntu/replaced_compressed_source_code:/data/replaced
-
     environment:
       - FLASK_ENV=development
       - UPLOAD_DIR=/data/uploaded
