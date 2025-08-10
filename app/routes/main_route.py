@@ -23,6 +23,7 @@ def upload_infodb():
     return render_template('upload/info_db.html',name_user=current_user.name_account)
 
 @main_bp.route("/success")
+@login_required
 def success():
     jobs = session.get('jobs', [])
     return render_template("success.html", jobs=jobs,name_user=current_user.name_account)
@@ -40,6 +41,7 @@ def login():
     return render_template('login.html')
 
 @main_bp.route('/indexLogin')
+@login_required
 def index_login():
     name_user=request.args.get('name','Khách')
     return render_template('indexLogin.html',name_user=current_user.name_account)
