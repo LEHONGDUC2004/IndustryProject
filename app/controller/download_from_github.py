@@ -34,4 +34,4 @@ def download_public_zip(github_url: str, dest_dir: str, ref: str | None = None, 
                 f.write(chunk)
         return out_path, filename
 
-    raise ValueError(f"Cannot fetch {owner}/{repo} (tried: {', '.join(tried)})")
+    raise ValueError(f"{owner}/{repo} (tried: {', '.join(tried)})")

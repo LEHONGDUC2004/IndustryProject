@@ -20,7 +20,7 @@ def trigger_via_generic(zip_name: str, s3_key: str, deploy_id: int, token: str =
     try:
         r = session.post(url, params={"token": token}, json=payload, timeout=10)
         logger.info("Trigger Jenkins via Generic: %s -> %s %s", url, r.status_code, r.text[:120])
-        return {"ok": r.ok, "status": r.status_code, "body": r.text}
+        return {"ok": r.ok, "status.html": r.status_code, "body": r.text}
     except requests.RequestException as e:
         logger.exception("Trigger Jenkins failed")
-        return {"ok": False, "status": 0, "error": str(e)}
+        return {"ok": False, "status.html": 0, "error": str(e)}

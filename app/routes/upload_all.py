@@ -152,7 +152,6 @@ def upload_all():
     session['last_deploy_id'] = dep_id
     trigger_via_generic(zip_filename, s3_key, dep_id)
 
-
     cleanup_temp_files(
         project_name=project_name,
         zip_filename=zip_filename,
