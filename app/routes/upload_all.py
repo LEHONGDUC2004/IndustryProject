@@ -159,7 +159,7 @@ def upload_all():
         extract_dir=EXTRACT_DIR,
         replaced_dir=REPLACED_DIR
     )
-    return redirect(url_for('main.success', name=project_name, name_database=db_info['DB_NAME'], name_host=db_info['DB_HOST'], name_user=db_info['DB_USER']))
+    return redirect(url_for('main.success', name=project_name))
 
 
 
