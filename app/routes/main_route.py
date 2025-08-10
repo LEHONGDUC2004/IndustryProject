@@ -43,7 +43,6 @@ def login():
 @main_bp.route('/indexLogin')
 @login_required
 def index_login():
-    name_user=request.args.get('name','Khách')
     return render_template('indexLogin.html',name_user=current_user.name_account)
 
 @main_bp.route('/logout')
