@@ -72,7 +72,6 @@ jobs:
         
           # Ghi đúng định dạng sudoers để tránh hỏng sudo
           echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/ubuntu
-          
           # Tạo thư mục và giải nén mã nguồn
           mkdir -p /home/ubuntu/IndustryProject
           tar xzf /home/ubuntu/app.tar.gz -C /home/ubuntu/IndustryProject --strip-components=1
