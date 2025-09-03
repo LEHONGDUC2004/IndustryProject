@@ -35,7 +35,6 @@ jobs:
         run: |
           scp -o StrictHostKeyChecking=no -P $PORT app.tar.gz $USER@$HOST:/home/$USER/app.tar.gz
 
-
       - name: Deploy on EC2
         env:
           HOST: ${{ secrets.VM_HOST }}
