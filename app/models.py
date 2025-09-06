@@ -59,7 +59,6 @@ class WebhookLog(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     payload = db.Column(db.Text)
     received_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 # Domain custom
 class Domain(db.Model):
     __tablename__ = 'domain'
