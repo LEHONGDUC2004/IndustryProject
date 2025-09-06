@@ -1,5 +1,6 @@
 import os
 
+
 def create_compose(docker_path, name_database, name_user, host_db, passwd, filename_sql, index):
     compose_path = os.path.join(docker_path, 'docker-compose.yml')
 
@@ -17,7 +18,7 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db_{index}
+      - DB_HOST=db
       - DB_USER={name_user}
       - DB_PASSWORD={passwd}
       - DB_NAME={name_database}
@@ -45,7 +46,7 @@ services:
     ports:
       - "80:80"
     environment:
-    
+
       - DB_HOST={host_db}
       - DB_USER={name_user}
       - DB_PASSWORD={passwd}
