@@ -23,7 +23,7 @@ services:
       - DB_NAME={name_database}
 
   db_{index}:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: flask_mysql_host_{index}
     restart: always
     environment:

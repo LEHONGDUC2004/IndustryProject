@@ -45,7 +45,6 @@ services:
     ports:
       - "80:80"
     environment:
-    
       - DB_HOST={host_db}
       - DB_USER={name_user}
       - DB_PASSWORD={passwd}
