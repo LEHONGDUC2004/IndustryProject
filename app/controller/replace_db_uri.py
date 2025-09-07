@@ -10,17 +10,15 @@ def replace_or_add_sqlalchemy_uri(file_path, project=None):
         print("Project không được truyền vào")
         return
 
-    #  Giải mã thông tin
+    #  Giải mã thông tinn
     real_db_name = project.name_database
     real_user = project.name_user
     real_pass = project.passwd
     real_host = project.name_host
-
     new_uri_line = (
         "app.config['SQLALCHEMY_DATABASE_URI'] = "
         f"'mysql+pymysql://{real_user}:{real_pass}@db/{real_db_name}?charset=utf8mb4'"
     )
-
     #  Thay vào file
     with open(file_path, 'r+', encoding='utf-8') as f:
         content = f.read()
