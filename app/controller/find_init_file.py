@@ -8,7 +8,7 @@ def find_flask_app_file(base_path):
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
-                        # Điều kiện tìm Flask app hoặc SQLAlchemy URI
+                        # Điều kiện tìm Flask app or SQLAlchemy URI
                         if "Flask(__name__)" in content or "SQLALCHEMY_DATABASE_URI" in content:
                             return file_path
                 except Exception as e:
