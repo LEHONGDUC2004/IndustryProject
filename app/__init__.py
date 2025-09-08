@@ -8,7 +8,6 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret123456'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db/upload_app'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
     db.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'main.login'
