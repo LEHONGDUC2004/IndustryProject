@@ -6,10 +6,6 @@ from app.models import User
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret123456'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = (
-    #     "mysql+pymysql://lehongduc3491:123456789a@duckou.ccv6i6g4e9td.us-east-1.rds.amazonaws.com:3306/industry_project?charset=utf8mb4"
-    # )
-    #
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@db/upload_app'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
