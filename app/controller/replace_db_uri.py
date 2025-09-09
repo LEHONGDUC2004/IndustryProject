@@ -14,10 +14,10 @@ def replace_or_add_sqlalchemy_uri(file_path, project=None):
     real_db_name = project.name_database
     real_user = project.name_user
     real_pass = project.passwd
-    real_host = project.name_host
+    real_host = project.name_host or "db"
     new_uri_line = (
         "app.config['SQLALCHEMY_DATABASE_URI'] = "
-        f"'mysql+pymysql://{real_user}:{real_pass}@db/{real_db_name}?charset=utf8mb4'"
+        f"'mysql+pymysql://{real_user}:{real_pass}@{real_host}/{real_db_name}?charset=utf8mb4'"
     )
     #  Thay vào file
     with open(file_path, 'r+', encoding='utf-8') as f:
